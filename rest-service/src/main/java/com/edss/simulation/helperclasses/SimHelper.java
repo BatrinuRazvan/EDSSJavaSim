@@ -3,6 +3,8 @@ package com.edss.simulation.helperclasses;
 import java.time.LocalDate;
 import java.time.Month;
 
+import com.edss.simulation.simulation.Agent;
+
 public class SimHelper {
 
 	public static int initMonthsToDays(int simulationPeriodMonths) {
@@ -24,6 +26,17 @@ public class SimHelper {
 		}
 
 		return result;
+	}
+
+	public static boolean isOneOfAgentsSick(Agent agent1, Agent agent2) {
+//		check to see if one of the agents is sick, otherwise there is no point
+		if (agent1.isSick() && !agent2.isSick()) {
+			return true;
+		}
+		if (agent2.isSick() && !agent1.isSick()) {
+			return true;
+		}
+		return false;
 	}
 
 }

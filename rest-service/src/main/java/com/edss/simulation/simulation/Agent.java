@@ -3,6 +3,7 @@ package com.edss.simulation.simulation;
 import java.util.Random;
 
 import com.edss.simulation.helperclasses.AgeGroup;
+import com.edss.simulation.helperclasses.DiseaseState;
 
 public class Agent {
 
@@ -90,6 +91,19 @@ public class Agent {
 		} else {
 			ableToMeet = true;
 		}
+	}
+
+	public boolean checkNeedsHospitalization() {
+		if (isSick && disease.aggravates(DiseaseState.NORMAL, DiseaseState.NEEDS_HOSPITAL)) {
+			isHospitalized = true;
+			ableToMeet = false;
+			return true;
+		}
+		return false;
+	}
+
+	public boolean checkNeedsIcu() {
+		return isSick && disease.aggravates(DiseaseState.NEEDS_HOSPITAL, DiseaseState.NEEDS_ICU);
 	}
 
 }

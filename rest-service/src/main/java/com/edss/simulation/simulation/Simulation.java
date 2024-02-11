@@ -16,14 +16,16 @@ public class Simulation {
 	private int childrenCount;
 	private int adultsCount;
 	private int elderlyCount;
+	private int susceptibleAgents;
 	private int sickAgents;
 	private int deadAgents;
 	private int recoveredAgents;
 	private int numberOfSickAtStart;
 	private List<Agent> agents = new ArrayList<>();
 	private List<Agent> outsideAgents = new ArrayList<>();
+	private Hospital hospital;
 
-	public Simulation(int simulationPeriodMonths, int numberOfAgents, int numberOfSickAtStart) {
+	public Simulation(int simulationPeriodMonths, int numberOfAgents, int numberOfSickAtStart, Hospital hospital) {
 		this.dayCounter = 1;
 		this.simulationPeriodDays = SimHelper.initMonthsToDays(simulationPeriodMonths);
 		this.numberOfAgents = numberOfAgents;
@@ -31,7 +33,8 @@ public class Simulation {
 		this.elderlyCount = numberOfAgents * 198 / 1000;
 		this.adultsCount = numberOfAgents - childrenCount - elderlyCount;
 		this.numberOfSickAtStart = numberOfSickAtStart;
-
+		this.hospital = hospital;
+		this.susceptibleAgents = numberOfAgents - numberOfSickAtStart;
 	}
 
 	public void runSimulation() {
@@ -42,11 +45,21 @@ public class Simulation {
 
 			for (Agent agent : agents) {
 				if (checkIfAgentDies(agent)) {
+					hospital.removeAgent(agent);
+					deadAgents += 1;
+					sickAgents -= 1;
 					continue;
 				}
 				if (agent.willHeal()) {
 					sickAgents -= 1;
 					recoveredAgents += 1;
+				}
+				if (agent.checkNeedsHospitalization()) {
+					hospital.getNormalBedAgents().add(agent);
+				}
+				if (agent.checkNeedsIcu()) {
+					hospital.getIcuBedAgents().add(agent);
+					hospital.getNormalBedAgents().remove(agent);
 				}
 				agent.checkIfInfectious();
 				agent.checkIfAbleToMeet();
@@ -71,19 +84,23 @@ public class Simulation {
 			Agent agent1 = outsideAgents.get(0);
 			Agent agent2 = outsideAgents.get(1);
 			Random infection = new Random();
+			if (!SimHelper.isOneOfAgentsSick(agent1, agent2)) {
+				continue;
+			}
 			if (agent1.isInfectious() && infection.nextFloat(0, 100) <= agent1.getDisease().getChanceToTransmit()) {
-				Disease disease = new Disease(null, iterator, iterator, iterator, iterator, iterator, iterator);
+				Disease disease = new Disease();
 				agent2.setDisease(disease);
 			}
 			if (agent2.isInfectious() && infection.nextFloat(0, 100) <= agent2.getDisease().getChanceToTransmit()) {
-				Disease disease = new Disease(null, iterator, iterator, iterator, iterator, iterator, iterator);
+				Disease disease = new Disease();
 				agent1.setDisease(disease);
 			}
+
 		}
 	}
 
 	private boolean checkIfAgentDies(Agent agent) {
-		if (agent.isSick()) {
+		if (agent.isSick()) { // check added for faster processing
 			Random kill = new Random();
 			if (kill.nextInt(0, 100) < agent.getDisease().getChanceToKill()) {
 				agents.remove(agent);
