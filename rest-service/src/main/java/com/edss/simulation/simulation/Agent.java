@@ -15,7 +15,8 @@ public class Agent {
 	private float immunity;
 	private boolean ableToMeet;
 	private boolean isAlive;
-	private Hospital hospital;
+	private boolean isHospitalized;
+	private int chanceToGoOut;
 
 	public Agent(boolean isInfectious, AgeGroup ageGroup, float immunity) {
 		this.isSick = false;
@@ -24,12 +25,16 @@ public class Agent {
 		this.isRecovered = false;
 		this.ageGroup = ageGroup;
 		this.immunity = immunity;
-		this.ableToMeet = false;
+		this.ableToMeet = true;
 		this.isAlive = true;
 	}
 
 	public boolean isSick() {
 		return isSick;
+	}
+
+	public boolean isInfectious() {
+		return isInfectious;
 	}
 
 	public boolean isRecovered() {
@@ -42,6 +47,14 @@ public class Agent {
 
 	public void setDisease(Disease disease) {
 		this.disease = disease;
+	}
+
+	public int getChanceToGoOut() {
+		return chanceToGoOut;
+	}
+
+	public void setChanceToGoOut(int chanceToGoOut) {
+		this.chanceToGoOut = chanceToGoOut;
 	}
 
 	public boolean willHeal() {
@@ -72,7 +85,11 @@ public class Agent {
 	}
 
 	public void checkIfAbleToMeet() {
-		// TODO Auto-generated method stub
-
+		if (isSelfQuarantined || isHospitalized) {
+			ableToMeet = false;
+		} else {
+			ableToMeet = true;
+		}
 	}
+
 }

@@ -29,6 +29,10 @@ public class Disease {
 		return chanceToHeal;
 	}
 
+	public float getChanceToTransmit() {
+		return chanceToTransmit;
+	}
+
 	public boolean hasIncubated() {
 		return periodOfDisease >= incubationTime ? true : false;
 	}

@@ -1,5 +1,7 @@
 package com.edss.simulation.simulation;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -18,7 +20,8 @@ public class Simulation {
 	private int deadAgents;
 	private int recoveredAgents;
 	private int numberOfSickAtStart;
-	private List<Agent> agents = null;
+	private List<Agent> agents = new ArrayList<>();
+	private List<Agent> outsideAgents = new ArrayList<>();
 
 	public Simulation(int simulationPeriodMonths, int numberOfAgents, int numberOfSickAtStart) {
 		this.dayCounter = 1;
@@ -48,13 +51,35 @@ public class Simulation {
 				agent.checkIfInfectious();
 				agent.checkIfAbleToMeet();
 				if (agent.ableToMeet()) {
-
+					Random goOut = new Random();
+					if (agent.getChanceToGoOut() >= goOut.nextInt(0, 100)) {
+						outsideAgents.add(agent);
+					}
 				}
 			}
+
+			meetAgents();
 
 			dayCounter += 1;
 		}
 
+	}
+
+	private void meetAgents() {
+		Collections.shuffle(outsideAgents);
+		for (int iterator = 0; iterator < outsideAgents.size() / 2; iterator++) {
+			Agent agent1 = outsideAgents.get(0);
+			Agent agent2 = outsideAgents.get(1);
+			Random infection = new Random();
+			if (agent1.isInfectious() && infection.nextFloat(0, 100) <= agent1.getDisease().getChanceToTransmit()) {
+				Disease disease = new Disease(null, iterator, iterator, iterator, iterator, iterator, iterator);
+				agent2.setDisease(disease);
+			}
+			if (agent2.isInfectious() && infection.nextFloat(0, 100) <= agent2.getDisease().getChanceToTransmit()) {
+				Disease disease = new Disease(null, iterator, iterator, iterator, iterator, iterator, iterator);
+				agent1.setDisease(disease);
+			}
+		}
 	}
 
 	private boolean checkIfAgentDies(Agent agent) {
