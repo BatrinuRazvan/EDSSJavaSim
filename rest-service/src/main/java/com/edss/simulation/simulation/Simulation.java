@@ -14,9 +14,9 @@ public class Simulation {
 	private int childrenCount;
 	private int adultsCount;
 	private int elderlyCount;
-	private int healthyAgents;
 	private int sickAgents;
 	private int deadAgents;
+	private int recoveredAgents;
 	private int numberOfSickAtStart;
 	private List<Agent> agents = null;
 
@@ -37,9 +37,37 @@ public class Simulation {
 
 		while (dayCounter != simulationPeriodDays) {
 
+			for (Agent agent : agents) {
+				if (checkIfAgentDies(agent)) {
+					continue;
+				}
+				if (agent.willHeal()) {
+					sickAgents -= 1;
+					recoveredAgents += 1;
+				}
+				agent.checkIfInfectious();
+				agent.checkIfAbleToMeet();
+				if (agent.ableToMeet()) {
+
+				}
+			}
+
 			dayCounter += 1;
 		}
 
+	}
+
+	private boolean checkIfAgentDies(Agent agent) {
+		if (agent.isSick()) {
+			Random kill = new Random();
+			if (kill.nextInt(0, 100) < agent.getDisease().getChanceToKill()) {
+				agents.remove(agent);
+				sickAgents -= 1;
+				deadAgents += 1;
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private void initializeAgents() {
