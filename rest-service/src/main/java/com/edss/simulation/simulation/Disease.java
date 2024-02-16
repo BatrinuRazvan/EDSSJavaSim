@@ -4,6 +4,7 @@ import java.util.Random;
 
 import com.edss.simulation.helperclasses.DiseaseState;
 import com.edss.simulation.helperclasses.SimConstants;
+import com.edss.simulation.helperclasses.SimHelper;
 
 public class Disease {
 
@@ -16,6 +17,7 @@ public class Disease {
 	private float chanceToKill;
 	private DiseaseState state;
 	private float chanceToAggravate;
+	private boolean isAsymptomatic;
 
 	public Disease() {
 		this.name = SimConstants.NAME_OF_DISEASE;
@@ -25,6 +27,7 @@ public class Disease {
 		this.healingTime = SimConstants.healingTimeDisease;
 		this.chanceToHeal = SimConstants.initialChanceToHeal;
 		this.chanceToKill = SimConstants.initialChanceToKill;
+		this.isAsymptomatic = SimHelper.developAsymptomatic(SimConstants.chanceForAsymptomatic);
 	}
 
 	public float getChanceToKill() {

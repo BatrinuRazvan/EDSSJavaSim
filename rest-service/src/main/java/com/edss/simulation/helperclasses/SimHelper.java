@@ -2,8 +2,9 @@ package com.edss.simulation.helperclasses;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.Random;
 
-import com.edss.simulation.simulation.Agent;
+import com.edss.simulation.agents.Agent;
 
 public class SimHelper {
 
@@ -37,6 +38,11 @@ public class SimHelper {
 			return true;
 		}
 		return false;
+	}
+
+	public static boolean developAsymptomatic(int chanceForAsymptomatic) {
+		Random asymptomatic = new Random();
+		return asymptomatic.nextInt(0, 100) <= chanceForAsymptomatic;
 	}
 
 }

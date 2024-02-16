@@ -1,31 +1,30 @@
-package com.edss.simulation.simulation;
+package com.edss.simulation.agents;
 
 import java.util.Random;
 
 import com.edss.simulation.helperclasses.AgeGroup;
 import com.edss.simulation.helperclasses.DiseaseState;
+import com.edss.simulation.simulation.Disease;
 
-public class Agent {
+public abstract class Agent {
 
-	private Disease disease;
-	private boolean isSick;
-	private boolean isSelfQuarantined;
-	private boolean isInfectious;
-	private boolean isRecovered;
-	private AgeGroup ageGroup;
-	private float immunity;
-	private boolean ableToMeet;
-	private boolean isAlive;
-	private boolean isHospitalized;
-	private int chanceToGoOut;
+	protected Disease disease;
+	protected boolean isSick;
+	protected boolean isSelfQuarantined;
+	protected boolean isInfectious;
+	protected boolean isRecovered;
+	protected AgeGroup ageGroup;
+	protected float immunity;
+	protected boolean ableToMeet;
+	protected boolean isAlive;
+	protected boolean isHospitalized;
+	protected int chanceToGoOut;
 
-	public Agent(boolean isInfectious, AgeGroup ageGroup, float immunity) {
+	public Agent(boolean isInfectious) {
 		this.isSick = false;
 		this.isSelfQuarantined = false;
 		this.isInfectious = isInfectious;
 		this.isRecovered = false;
-		this.ageGroup = ageGroup;
-		this.immunity = immunity;
 		this.ableToMeet = true;
 		this.isAlive = true;
 	}
@@ -58,6 +57,26 @@ public class Agent {
 		this.chanceToGoOut = chanceToGoOut;
 	}
 
+	public float getImmunity() {
+		return immunity;
+	}
+
+	public void setImmunity(float immunity) {
+		this.immunity = immunity;
+	}
+
+	public float getChanceToTransmitDisease() {
+		return this.getDisease().getChanceToTransmit();
+	}
+
+	public float getChanceToHealDisease() {
+		return this.getDisease().getChanceToHeal();
+	}
+
+	public float getChanceToBeKilled() {
+		return this.getDisease().getChanceToKill();
+	}
+
 	public boolean willHeal() {
 		if (isSick && disease.hasIncubated()) {
 			Random heal = new Random();
@@ -65,7 +84,7 @@ public class Agent {
 				isSick = false;
 				isRecovered = true;
 				isInfectious = false;
-				immunity = 100;
+				setImmunity(100);
 				return true;
 			}
 		}
@@ -73,7 +92,7 @@ public class Agent {
 	}
 
 	public void checkIfInfectious() {
-		if (isInfectious) {
+		if (isInfectious || disease == null) {
 			return;
 		}
 		if (disease.getPeriod() >= disease.getIncubationTime()) {
@@ -105,5 +124,9 @@ public class Agent {
 	public boolean checkNeedsIcu() {
 		return isSick && disease.aggravates(DiseaseState.NEEDS_HOSPITAL, DiseaseState.NEEDS_ICU);
 	}
+
+	public abstract void updateStateOfDisease();
+
+	public abstract void initImmunity();
 
 }

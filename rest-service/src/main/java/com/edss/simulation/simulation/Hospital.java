@@ -2,6 +2,8 @@ package com.edss.simulation.simulation;
 
 import java.util.List;
 
+import com.edss.simulation.agents.Agent;
+
 public class Hospital {
 
 	private int normalBeds;
@@ -20,6 +22,16 @@ public class Hospital {
 
 	public List<Agent> getIcuBedAgents() {
 		return icuBedAgents;
+	}
+
+	public void addNormalBedAgent(Agent agent) {
+		normalBeds += 1;
+		normalBedAgents.add(agent);
+	}
+
+	public void addIcuBedAgent(Agent agent) {
+		icuBeds += 1;
+		icuBedAgents.add(agent);
 	}
 
 	public void removeAgent(Agent agent) {

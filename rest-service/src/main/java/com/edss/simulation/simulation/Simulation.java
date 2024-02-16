@@ -5,7 +5,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import com.edss.simulation.helperclasses.AgeGroup;
+import com.edss.simulation.agents.AdultAgent;
+import com.edss.simulation.agents.Agent;
+import com.edss.simulation.agents.ChildAgent;
+import com.edss.simulation.agents.ElderAgent;
+import com.edss.simulation.helperclasses.SimConstants;
 import com.edss.simulation.helperclasses.SimHelper;
 
 public class Simulation {
@@ -46,20 +50,20 @@ public class Simulation {
 			for (Agent agent : agents) {
 				if (checkIfAgentDies(agent)) {
 					hospital.removeAgent(agent);
-					deadAgents += 1;
-					sickAgents -= 1;
+					updateGlobalVariables(SimConstants.ADD_DEAD, SimConstants.REMOVE_SICK);
 					continue;
 				}
 				if (agent.willHeal()) {
-					sickAgents -= 1;
-					recoveredAgents += 1;
+					updateGlobalVariables(SimConstants.REMOVE_SICK, SimConstants.ADD_RECOVERED);
 				}
+
+				agent.updateStateOfDisease();
 				if (agent.checkNeedsHospitalization()) {
-					hospital.getNormalBedAgents().add(agent);
+					hospital.addNormalBedAgent(agent);
 				}
 				if (agent.checkNeedsIcu()) {
-					hospital.getIcuBedAgents().add(agent);
-					hospital.getNormalBedAgents().remove(agent);
+					hospital.removeAgent(agent);
+					hospital.addIcuBedAgent(agent);
 				}
 				agent.checkIfInfectious();
 				agent.checkIfAbleToMeet();
@@ -81,19 +85,28 @@ public class Simulation {
 	private void meetAgents() {
 		Collections.shuffle(outsideAgents);
 		for (int iterator = 0; iterator < outsideAgents.size() / 2; iterator++) {
+
 			Agent agent1 = outsideAgents.get(0);
 			Agent agent2 = outsideAgents.get(1);
-			Random infection = new Random();
+			Random infectionAndImmunity = new Random();
+
 			if (!SimHelper.isOneOfAgentsSick(agent1, agent2)) {
 				continue;
 			}
-			if (agent1.isInfectious() && infection.nextFloat(0, 100) <= agent1.getDisease().getChanceToTransmit()) {
-				Disease disease = new Disease();
-				agent2.setDisease(disease);
+			if (agent1.isInfectious() && infectionAndImmunity.nextFloat(0, 100) < agent1.getChanceToTransmitDisease()) {
+				if (infectionAndImmunity.nextFloat(0, 100) > agent2.getImmunity()) {
+					Disease disease = new Disease();
+					agent2.setDisease(disease);
+					updateGlobalVariables(SimConstants.REMOVE_SUSCEPTIBLE, SimConstants.ADD_SICK);
+				}
 			}
-			if (agent2.isInfectious() && infection.nextFloat(0, 100) <= agent2.getDisease().getChanceToTransmit()) {
-				Disease disease = new Disease();
-				agent1.setDisease(disease);
+
+			if (agent2.isInfectious() && infectionAndImmunity.nextFloat(0, 100) < agent2.getChanceToTransmitDisease()) {
+				if (infectionAndImmunity.nextFloat(0, 100) > agent2.getImmunity()) {
+					Disease disease = new Disease();
+					agent1.setDisease(disease);
+					updateGlobalVariables(SimConstants.REMOVE_SUSCEPTIBLE, SimConstants.ADD_SICK);
+				}
 			}
 
 		}
@@ -102,7 +115,7 @@ public class Simulation {
 	private boolean checkIfAgentDies(Agent agent) {
 		if (agent.isSick()) { // check added for faster processing
 			Random kill = new Random();
-			if (kill.nextInt(0, 100) < agent.getDisease().getChanceToKill()) {
+			if (kill.nextInt(0, 100) < agent.getChanceToBeKilled()) {
 				agents.remove(agent);
 				sickAgents -= 1;
 				deadAgents += 1;
@@ -123,9 +136,9 @@ public class Simulation {
 			Agent agent;
 			int immunity = rand.nextInt(40 - 10) + 10;
 			if (i < sickChildren) {
-				agent = new Agent(true, AgeGroup.CHILD, immunity);
+				agent = new ChildAgent(true);
 			} else {
-				agent = new Agent(false, AgeGroup.CHILD, immunity);
+				agent = new ChildAgent(false);
 			}
 			agents.add(agent);
 		}
@@ -134,9 +147,9 @@ public class Simulation {
 			Agent agent;
 			int immunity = rand.nextInt(70 - 35) + 35;
 			if (i < sickAdults) {
-				agent = new Agent(true, AgeGroup.ADULT, immunity);
+				agent = new AdultAgent(true);
 			} else {
-				agent = new Agent(false, AgeGroup.ADULT, immunity);
+				agent = new AdultAgent(false);
 			}
 			agents.add(agent);
 		}
@@ -145,12 +158,42 @@ public class Simulation {
 			Agent agent;
 			int immunity = rand.nextInt(40 - 5) + 5;
 			if (i < sickElderly) {
-				agent = new Agent(true, AgeGroup.ELDER, immunity);
+				agent = new ElderAgent(true);
 			} else {
-				agent = new Agent(false, AgeGroup.ELDER, immunity);
+				agent = new ElderAgent(false);
 			}
 			agents.add(agent);
 		}
 	}
 
+	private void updateGlobalVariables(String... updates) {
+		for (String updateGlobal : updates) {
+			switch (updateGlobal) {
+			case "ADD_SUSCEPTIBLE":
+				susceptibleAgents += 1;
+				break;
+			case "ADD_DEAD":
+				deadAgents += 1;
+				break;
+			case "ADD_SICK":
+				sickAgents += 1;
+				break;
+			case "ADD_RECOVERED":
+				recoveredAgents += 1;
+			case "REMOVE_SUSCEPTIBLE":
+				susceptibleAgents -= 1;
+				break;
+			case "REMOVE_DEAD":
+				deadAgents -= 1;
+				break;
+			case "REMOVE_SICK":
+				sickAgents -= 1;
+				break;
+
+			default:
+				throw new IllegalArgumentException("Unexpected value: " + updateGlobal);
+			}
+		}
+
+	}
 }
