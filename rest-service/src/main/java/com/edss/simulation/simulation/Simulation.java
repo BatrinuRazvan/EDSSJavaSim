@@ -1,5 +1,6 @@
 package com.edss.simulation.simulation;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -15,21 +16,26 @@ import com.edss.simulation.helperclasses.SimHelper;
 public class Simulation {
 
 	private int dayCounter;
+	private Date todaysDate;
 	private int simulationPeriodDays;
 	private int numberOfAgents;
 	private int childrenCount;
 	private int adultsCount;
 	private int elderlyCount;
+	private int numberOfSickAtStart;
 	private static int susceptibleAgents;
 	private static int sickAgents;
 	private static int deadAgents;
 	private static int recoveredAgents;
-	private int numberOfSickAtStart;
+	private static int dailyNewSick;
+	private static int dailyNewDead;
+	private static int dailyNewRecovered;
 	private List<Agent> agents = new ArrayList<>();
 	private List<Agent> outsideAgents = new ArrayList<>();
 
 	public Simulation(int simulationPeriodMonths, int numberOfAgents, int numberOfSickAtStart) {
-		this.dayCounter = 1;
+		this.dayCounter = 0;
+		this.setTodaysDate(SimHelper.initCurrentDate());
 		this.simulationPeriodDays = SimHelper.initMonthsToDays(simulationPeriodMonths);
 		this.numberOfAgents = numberOfAgents;
 		this.childrenCount = numberOfAgents * 187 / 1000;
@@ -46,6 +52,8 @@ public class Simulation {
 		SimHelper.initalizeCentralLocation();
 
 		while (dayCounter != simulationPeriodDays) {
+
+			resetDailyVariables();
 
 			for (Agent agent : agents) {
 				if (checkIfAgentDies(agent)) {
@@ -75,8 +83,18 @@ public class Simulation {
 			meetAgents();
 
 			dayCounter += 1;
+			SimHelper.dailyStats(dayCounter, todaysDate, susceptibleAgents, sickAgents, recoveredAgents, deadAgents,
+					dailyNewSick, dailyNewRecovered, dailyNewDead, Hospital.getHospital().getNormalBedAgents().size(),
+					Hospital.getHospital().getIcuBedAgents().size());
+			setTodaysDate(SimHelper.nextDay(todaysDate));
 		}
 
+	}
+
+	private void resetDailyVariables() {
+		dailyNewSick = 0;
+		dailyNewRecovered = 0;
+		dailyNewDead = 0;
 	}
 
 	private void meetAgents() {
@@ -167,12 +185,16 @@ public class Simulation {
 				break;
 			case "ADD_DEAD":
 				deadAgents += 1;
+				dailyNewDead += 1;
 				break;
 			case "ADD_SICK":
 				sickAgents += 1;
+				dailyNewSick += 1;
 				break;
 			case "ADD_RECOVERED":
 				recoveredAgents += 1;
+				dailyNewRecovered += 1;
+				break;
 			case "REMOVE_SUSCEPTIBLE":
 				susceptibleAgents -= 1;
 				break;
@@ -188,5 +210,9 @@ public class Simulation {
 			}
 		}
 
+	}
+
+	public void setTodaysDate(Date todaysDate) {
+		this.todaysDate = todaysDate;
 	}
 }

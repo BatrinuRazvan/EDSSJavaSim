@@ -14,7 +14,7 @@ public class Hospital {
 
 	public Hospital(int numberOfAgents) {
 		this.normalBeds = numberOfAgents / 1000 * 7 / 4 * 3;
-		this.icuBeds = normalBeds * 4 / 100;
+		this.icuBeds = getTotalNormalBeds() * 4 / 100;
 	}
 
 	public static void initHospital(int nrOfAgents) {
@@ -23,6 +23,14 @@ public class Hospital {
 
 	public static synchronized Hospital getHospital() {
 		return hospital;
+	}
+
+	public int getTotalNormalBeds() {
+		return normalBeds;
+	}
+
+	public int getTotalIcuBeds() {
+		return icuBeds;
 	}
 
 	public List<Agent> getNormalBedAgents() {
@@ -34,23 +42,23 @@ public class Hospital {
 	}
 
 	public void addNormalBedAgent(Agent agent) {
-		normalBeds += 1;
+		normalBeds = getTotalNormalBeds() + 1;
 		normalBedAgents.add(agent);
 	}
 
 	public void addIcuBedAgent(Agent agent) {
-		icuBeds += 1;
+		icuBeds = getTotalIcuBeds() + 1;
 		icuBedAgents.add(agent);
 	}
 
 	public void removeAgent(Agent agent) {
 		if (normalBedAgents.contains(agent)) {
 			normalBedAgents.remove(agent);
-			normalBeds += 1;
+			normalBeds = getTotalNormalBeds() + 1;
 		}
 		if (icuBedAgents.contains(agent)) {
 			icuBedAgents.remove(agent);
-			icuBeds += 1;
+			icuBeds = getTotalIcuBeds() + 1;
 		}
 	}
 
