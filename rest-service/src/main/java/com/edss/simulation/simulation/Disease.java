@@ -54,6 +54,10 @@ public class Disease {
 		return incubationTime;
 	}
 
+	public int getHealingTime() {
+		return healingTime;
+	}
+
 	public boolean aggravates(DiseaseState stateToCheck, DiseaseState nextState) {
 		if (state.equals(stateToCheck)) {
 			Random aggravate = new Random();
@@ -63,4 +67,24 @@ public class Disease {
 		}
 		return false;
 	}
+
+	public void updateVariable(String varibleToChange, Float... optinalIncrementer) {
+		switch (varibleToChange) {
+		case "CHANCE_TO_KILL_NORMAL_BED":
+			chanceToKill += 5;
+			break;
+		case "CHANCE_TO_KILL_ICU_BED":
+			chanceToKill += 10;
+			break;
+		case "CHANCE_TO_HEAL":
+			chanceToHeal += optinalIncrementer[0];
+			break;
+		case "CHANCE_TO_KILL":
+			chanceToKill += optinalIncrementer[0];
+			break;
+		default:
+			throw new IllegalArgumentException("Unexpected value: " + varibleToChange);
+		}
+	}
+
 }

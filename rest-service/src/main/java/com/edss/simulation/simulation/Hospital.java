@@ -10,10 +10,19 @@ public class Hospital {
 	private int icuBeds;
 	private List<Agent> normalBedAgents;
 	private List<Agent> icuBedAgents;
+	private static Hospital hospital = null;
 
 	public Hospital(int numberOfAgents) {
 		this.normalBeds = numberOfAgents / 1000 * 7 / 4 * 3;
 		this.icuBeds = normalBeds * 4 / 100;
+	}
+
+	public static void initHospital(int nrOfAgents) {
+		hospital = new Hospital(nrOfAgents);
+	}
+
+	public static synchronized Hospital getHospital() {
+		return hospital;
 	}
 
 	public List<Agent> getNormalBedAgents() {

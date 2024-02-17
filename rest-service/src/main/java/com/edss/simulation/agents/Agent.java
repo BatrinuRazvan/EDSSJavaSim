@@ -4,7 +4,9 @@ import java.util.Random;
 
 import com.edss.simulation.helperclasses.AgeGroup;
 import com.edss.simulation.helperclasses.DiseaseState;
+import com.edss.simulation.helperclasses.SimConstants;
 import com.edss.simulation.simulation.Disease;
+import com.edss.simulation.simulation.Hospital;
 
 public abstract class Agent {
 
@@ -85,6 +87,7 @@ public abstract class Agent {
 				isRecovered = true;
 				isInfectious = false;
 				setImmunity(100);
+				Hospital.getHospital().removeAgent(this);
 				return true;
 			}
 		}
@@ -116,13 +119,23 @@ public abstract class Agent {
 		if (isSick && disease.aggravates(DiseaseState.NORMAL, DiseaseState.NEEDS_HOSPITAL)) {
 			isHospitalized = true;
 			ableToMeet = false;
+			Hospital.getHospital().addNormalBedAgent(this);
+			disease.updateVariable(SimConstants.CHANCE_TO_KILL_NORMAL_BED);
 			return true;
 		}
 		return false;
 	}
 
 	public boolean checkNeedsIcu() {
-		return isSick && disease.aggravates(DiseaseState.NEEDS_HOSPITAL, DiseaseState.NEEDS_ICU);
+		if (isSick && disease.aggravates(DiseaseState.NEEDS_HOSPITAL, DiseaseState.NEEDS_ICU)) {
+			isHospitalized = true;
+			ableToMeet = false;
+			Hospital.getHospital().removeAgent(this);
+			Hospital.getHospital().addNormalBedAgent(this);
+			disease.updateVariable(SimConstants.CHANCE_TO_KILL_ICU_BED);
+			return true;
+		}
+		return false;
 	}
 
 	public abstract void updateStateOfDisease();

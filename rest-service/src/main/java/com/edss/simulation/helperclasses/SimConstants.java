@@ -19,5 +19,12 @@ public class SimConstants {
 	public static final String REMOVE_DEAD = "REMOVE_DEAD";
 	public static final String REMOVE_SICK = "REMOVE_SICK";
 
+	// for Disease class
+	public static final String CHANCE_TO_KILL_NORMAL_BED = "CHANCE_TO_KILL_NORMAL_BED";
+	public static final String CHANCE_TO_KILL_ICU_BED = "CHANCE_TO_KILL_ICU_BED";
+
+	public static final String CHANCE_TO_HEAL = "CHANCE_TO_HEAL";
+	public static final String CHANCE_TO_KILL = "CHANCE_TO_KILL";
+
 	public static int chanceForAsymptomatic = 5;
 }

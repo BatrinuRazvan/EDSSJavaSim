@@ -27,9 +27,8 @@ public class Simulation {
 	private int numberOfSickAtStart;
 	private List<Agent> agents = new ArrayList<>();
 	private List<Agent> outsideAgents = new ArrayList<>();
-	private Hospital hospital;
 
-	public Simulation(int simulationPeriodMonths, int numberOfAgents, int numberOfSickAtStart, Hospital hospital) {
+	public Simulation(int simulationPeriodMonths, int numberOfAgents, int numberOfSickAtStart) {
 		this.dayCounter = 1;
 		this.simulationPeriodDays = SimHelper.initMonthsToDays(simulationPeriodMonths);
 		this.numberOfAgents = numberOfAgents;
@@ -37,19 +36,19 @@ public class Simulation {
 		this.elderlyCount = numberOfAgents * 198 / 1000;
 		this.adultsCount = numberOfAgents - childrenCount - elderlyCount;
 		this.numberOfSickAtStart = numberOfSickAtStart;
-		this.hospital = hospital;
 		this.susceptibleAgents = numberOfAgents - numberOfSickAtStart;
 	}
 
 	public void runSimulation() {
 
 		initializeAgents();
+		SimHelper.initalizeHospital(numberOfAgents);
 
 		while (dayCounter != simulationPeriodDays) {
 
 			for (Agent agent : agents) {
 				if (checkIfAgentDies(agent)) {
-					hospital.removeAgent(agent);
+					Hospital.getHospital().removeAgent(agent);
 					updateGlobalVariables(SimConstants.ADD_DEAD, SimConstants.REMOVE_SICK);
 					continue;
 				}
@@ -58,12 +57,11 @@ public class Simulation {
 				}
 
 				agent.updateStateOfDisease();
-				if (agent.checkNeedsHospitalization()) {
-					hospital.addNormalBedAgent(agent);
-				}
+				agent.checkNeedsHospitalization();
+
 				if (agent.checkNeedsIcu()) {
-					hospital.removeAgent(agent);
-					hospital.addIcuBedAgent(agent);
+					Hospital.getHospital().removeAgent(agent);
+					Hospital.getHospital().addIcuBedAgent(agent);
 				}
 				agent.checkIfInfectious();
 				agent.checkIfAbleToMeet();

@@ -5,6 +5,7 @@ import java.time.Month;
 import java.util.Random;
 
 import com.edss.simulation.agents.Agent;
+import com.edss.simulation.simulation.Hospital;
 
 public class SimHelper {
 
@@ -43,6 +44,10 @@ public class SimHelper {
 	public static boolean developAsymptomatic(int chanceForAsymptomatic) {
 		Random asymptomatic = new Random();
 		return asymptomatic.nextInt(0, 100) <= chanceForAsymptomatic;
+	}
+
+	public static void initalizeHospital(int numberOfAgents) {
+		Hospital.initHospital(numberOfAgents);
 	}
 
 }
