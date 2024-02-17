@@ -26,5 +26,15 @@ public class SimConstants {
 	public static final String CHANCE_TO_HEAL = "CHANCE_TO_HEAL";
 	public static final String CHANCE_TO_KILL = "CHANCE_TO_KILL";
 
+	public static final String CHANCE_TO_AGGRAVATE = "CHANCE_TO_AGGRAVATE";
+
 	public static int chanceForAsymptomatic = 5;
+
+	public static float childAggravationChance = 0.0f;
+	public static float adultAggravationChance = 0.0f;
+	public static float elderAggravationChance = 0.0f;
+
+	public static int chanceToSelfQuarantine = 95; // 95% chance to self quarantine
+
+	public static int agentsAtCentralLocation_atSameTime = 100;
 }

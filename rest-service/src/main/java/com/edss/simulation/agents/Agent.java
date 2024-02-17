@@ -7,6 +7,7 @@ import com.edss.simulation.helperclasses.DiseaseState;
 import com.edss.simulation.helperclasses.SimConstants;
 import com.edss.simulation.simulation.Disease;
 import com.edss.simulation.simulation.Hospital;
+import com.edss.simulation.simulation.Simulation;
 
 public abstract class Agent {
 
@@ -45,10 +46,6 @@ public abstract class Agent {
 
 	public Disease getDisease() {
 		return disease;
-	}
-
-	public void setDisease(Disease disease) {
-		this.disease = disease;
 	}
 
 	public int getChanceToGoOut() {
@@ -115,31 +112,45 @@ public abstract class Agent {
 		}
 	}
 
-	public boolean checkNeedsHospitalization() {
+	public void checkNeedsHospitalization() {
 		if (isSick && disease.aggravates(DiseaseState.NORMAL, DiseaseState.NEEDS_HOSPITAL)) {
 			isHospitalized = true;
-			ableToMeet = false;
 			Hospital.getHospital().addNormalBedAgent(this);
 			disease.updateVariable(SimConstants.CHANCE_TO_KILL_NORMAL_BED);
-			return true;
+			disease.updateVariable(SimConstants.CHANCE_TO_AGGRAVATE, 25.0f);
 		}
-		return false;
 	}
 
-	public boolean checkNeedsIcu() {
+	public void checkNeedsIcu() {
 		if (isSick && disease.aggravates(DiseaseState.NEEDS_HOSPITAL, DiseaseState.NEEDS_ICU)) {
-			isHospitalized = true;
-			ableToMeet = false;
 			Hospital.getHospital().removeAgent(this);
-			Hospital.getHospital().addNormalBedAgent(this);
+			Hospital.getHospital().addIcuBedAgent(this);
 			disease.updateVariable(SimConstants.CHANCE_TO_KILL_ICU_BED);
-			return true;
 		}
-		return false;
+	}
+
+	protected void selfQuarantine() {
+		Random selfQuarantine = new Random();
+		if (selfQuarantine.nextInt(0, 100) <= SimConstants.chanceToSelfQuarantine) {
+			isSelfQuarantined = true;
+		}
 	}
 
 	public abstract void updateStateOfDisease();
 
 	public abstract void initImmunity();
+
+	public abstract void initDisease(Disease disease);
+
+	public void checkIfGetsSickAtCentralLocation() {
+		Random infectionAndImmunity = new Random();
+		if (infectionAndImmunity.nextFloat(0, 100) <= SimConstants.chanceToTransmitDisease / 2) {
+			if (infectionAndImmunity.nextFloat(0, 100) > this.getImmunity()) {
+				Disease disease = new Disease();
+				this.initDisease(disease);
+				Simulation.updateGlobalVariables(SimConstants.REMOVE_SUSCEPTIBLE, SimConstants.ADD_SICK);
+			}
+		}
+	}
 
 }

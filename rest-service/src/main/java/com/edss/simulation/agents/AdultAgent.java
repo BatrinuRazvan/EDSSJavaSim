@@ -4,6 +4,7 @@ import java.util.Random;
 
 import com.edss.simulation.helperclasses.AgeGroup;
 import com.edss.simulation.helperclasses.SimConstants;
+import com.edss.simulation.simulation.Disease;
 
 public class AdultAgent extends Agent {
 
@@ -15,14 +16,30 @@ public class AdultAgent extends Agent {
 
 	@Override
 	public void updateStateOfDisease() {
-		// case normal - after incubation
-		if (disease.hasIncubated()) {
-			if (disease.getPeriod() == disease.getHealingTime()) {
-				disease.updateVariable(SimConstants.CHANCE_TO_HEAL, 50.0f);
-				disease.updateVariable(SimConstants.CHANCE_TO_KILL, 0.01f);
+		if (disease != null && immunity < 100) {
+			// case normal - after incubation
+			if (disease.hasIncubated() && !isHospitalized) {
+				if (disease.getPeriod() == disease.getHealingTime()) {
+					disease.updateVariable(SimConstants.CHANCE_TO_HEAL, 50.0f);
+					disease.updateVariable(SimConstants.CHANCE_TO_KILL, 0.01f);
+				}
+				if (disease.getPeriod() > disease.getHealingTime()) {
+					disease.updateVariable(SimConstants.CHANCE_TO_HEAL, 2.0f);
+				}
+				selfQuarantine();
 			}
-			if (disease.getPeriod() > disease.getHealingTime()) {
-				disease.updateVariable(SimConstants.CHANCE_TO_HEAL, 2.0f);
+			// disease flow while in hospital
+			if (disease.hasIncubated() && isHospitalized) {
+				if (disease.getPeriod() == disease.getHealingTime()) {
+					disease.updateVariable(SimConstants.CHANCE_TO_HEAL, 25.0f);
+					disease.updateVariable(SimConstants.CHANCE_TO_KILL, 0.01f);
+				}
+				if (disease.getPeriod() > disease.getHealingTime()) {
+					disease.updateVariable(SimConstants.CHANCE_TO_HEAL, 3.0f);
+				}
+				if (disease.getPeriod() < disease.getHealingTime()) {
+					disease.updateVariable(SimConstants.CHANCE_TO_KILL, 1.0f);
+				}
 			}
 		}
 	}
@@ -31,6 +48,12 @@ public class AdultAgent extends Agent {
 	public void initImmunity() {
 		Random immuneSystem = new Random();
 		this.immunity = immuneSystem.nextInt(70 - 35) + 35;
+	}
+
+	@Override
+	public void initDisease(Disease disease) {
+		this.disease = disease;
+		this.disease.setChanceToAggravate(SimConstants.adultAggravationChance);
 	}
 
 }

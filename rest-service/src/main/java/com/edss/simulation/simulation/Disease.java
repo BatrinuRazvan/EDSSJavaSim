@@ -58,6 +58,10 @@ public class Disease {
 		return healingTime;
 	}
 
+	public void setChanceToAggravate(float chanceToAggravate) {
+		this.chanceToAggravate = chanceToAggravate;
+	}
+
 	public boolean aggravates(DiseaseState stateToCheck, DiseaseState nextState) {
 		if (state.equals(stateToCheck)) {
 			Random aggravate = new Random();
@@ -82,6 +86,8 @@ public class Disease {
 		case "CHANCE_TO_KILL":
 			chanceToKill += optinalIncrementer[0];
 			break;
+		case "CHANCE_TO_AGGRAVATE":
+			setChanceToAggravate(chanceToAggravate + optinalIncrementer[0]);
 		default:
 			throw new IllegalArgumentException("Unexpected value: " + varibleToChange);
 		}

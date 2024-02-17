@@ -20,10 +20,10 @@ public class Simulation {
 	private int childrenCount;
 	private int adultsCount;
 	private int elderlyCount;
-	private int susceptibleAgents;
-	private int sickAgents;
-	private int deadAgents;
-	private int recoveredAgents;
+	private static int susceptibleAgents;
+	private static int sickAgents;
+	private static int deadAgents;
+	private static int recoveredAgents;
 	private int numberOfSickAtStart;
 	private List<Agent> agents = new ArrayList<>();
 	private List<Agent> outsideAgents = new ArrayList<>();
@@ -43,6 +43,7 @@ public class Simulation {
 
 		initializeAgents();
 		SimHelper.initalizeHospital(numberOfAgents);
+		SimHelper.initalizeCentralLocation();
 
 		while (dayCounter != simulationPeriodDays) {
 
@@ -58,11 +59,8 @@ public class Simulation {
 
 				agent.updateStateOfDisease();
 				agent.checkNeedsHospitalization();
+				agent.checkNeedsIcu();
 
-				if (agent.checkNeedsIcu()) {
-					Hospital.getHospital().removeAgent(agent);
-					Hospital.getHospital().addIcuBedAgent(agent);
-				}
 				agent.checkIfInfectious();
 				agent.checkIfAbleToMeet();
 				if (agent.ableToMeet()) {
@@ -73,6 +71,7 @@ public class Simulation {
 				}
 			}
 
+			CentralLocation.getCentralLocation().meetAgentsAtCentralLocation(outsideAgents);
 			meetAgents();
 
 			dayCounter += 1;
@@ -91,18 +90,20 @@ public class Simulation {
 			if (!SimHelper.isOneOfAgentsSick(agent1, agent2)) {
 				continue;
 			}
-			if (agent1.isInfectious() && infectionAndImmunity.nextFloat(0, 100) < agent1.getChanceToTransmitDisease()) {
+			if (agent1.isInfectious()
+					&& infectionAndImmunity.nextFloat(0, 100) <= agent1.getChanceToTransmitDisease()) {
 				if (infectionAndImmunity.nextFloat(0, 100) > agent2.getImmunity()) {
 					Disease disease = new Disease();
-					agent2.setDisease(disease);
+					agent2.initDisease(disease);
 					updateGlobalVariables(SimConstants.REMOVE_SUSCEPTIBLE, SimConstants.ADD_SICK);
 				}
 			}
 
-			if (agent2.isInfectious() && infectionAndImmunity.nextFloat(0, 100) < agent2.getChanceToTransmitDisease()) {
+			if (agent2.isInfectious()
+					&& infectionAndImmunity.nextFloat(0, 100) <= agent2.getChanceToTransmitDisease()) {
 				if (infectionAndImmunity.nextFloat(0, 100) > agent2.getImmunity()) {
 					Disease disease = new Disease();
-					agent1.setDisease(disease);
+					agent1.initDisease(disease);
 					updateGlobalVariables(SimConstants.REMOVE_SUSCEPTIBLE, SimConstants.ADD_SICK);
 				}
 			}
@@ -115,8 +116,6 @@ public class Simulation {
 			Random kill = new Random();
 			if (kill.nextInt(0, 100) < agent.getChanceToBeKilled()) {
 				agents.remove(agent);
-				sickAgents -= 1;
-				deadAgents += 1;
 				return true;
 			}
 		}
@@ -128,11 +127,9 @@ public class Simulation {
 		int sickChildren = numberOfSickAtStart * 187 / 1000;
 		int sickElderly = numberOfSickAtStart * 198 / 1000;
 		int sickAdults = numberOfSickAtStart - sickChildren - sickElderly;
-		Random rand = new Random();
 
 		for (int i = 0; i < childrenCount; i++) {
 			Agent agent;
-			int immunity = rand.nextInt(40 - 10) + 10;
 			if (i < sickChildren) {
 				agent = new ChildAgent(true);
 			} else {
@@ -143,7 +140,6 @@ public class Simulation {
 
 		for (int i = 0; i < adultsCount; i++) {
 			Agent agent;
-			int immunity = rand.nextInt(70 - 35) + 35;
 			if (i < sickAdults) {
 				agent = new AdultAgent(true);
 			} else {
@@ -154,7 +150,6 @@ public class Simulation {
 
 		for (int i = 0; i < elderlyCount; i++) {
 			Agent agent;
-			int immunity = rand.nextInt(40 - 5) + 5;
 			if (i < sickElderly) {
 				agent = new ElderAgent(true);
 			} else {
@@ -164,7 +159,7 @@ public class Simulation {
 		}
 	}
 
-	private void updateGlobalVariables(String... updates) {
+	public static void updateGlobalVariables(String... updates) {
 		for (String updateGlobal : updates) {
 			switch (updateGlobal) {
 			case "ADD_SUSCEPTIBLE":

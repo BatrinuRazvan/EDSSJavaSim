@@ -5,6 +5,7 @@ import java.time.Month;
 import java.util.Random;
 
 import com.edss.simulation.agents.Agent;
+import com.edss.simulation.simulation.CentralLocation;
 import com.edss.simulation.simulation.Hospital;
 
 public class SimHelper {
@@ -48,6 +49,10 @@ public class SimHelper {
 
 	public static void initalizeHospital(int numberOfAgents) {
 		Hospital.initHospital(numberOfAgents);
+	}
+
+	public static void initalizeCentralLocation() {
+		CentralLocation.initCentralLocation();
 	}
 
 }
