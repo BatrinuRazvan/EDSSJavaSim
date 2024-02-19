@@ -24,18 +24,18 @@ public class ChildAgent extends Agent {
 					disease.updateVariable(SimConstants.CHANCE_TO_KILL, Double.valueOf("0.001"));
 				}
 				if (disease.getPeriod() > disease.getHealingTime()) {
-					disease.updateVariable(SimConstants.CHANCE_TO_HEAL, Double.valueOf("2"));
+					disease.updateVariable(SimConstants.CHANCE_TO_HEAL, Double.valueOf("10"));
 				}
 				selfQuarantine();
 			}
 			// disease flow while in hospital
 			if (disease.hasIncubated() && isHospitalized) {
 				if (disease.getPeriod() == disease.getHealingTime()) {
-					disease.updateVariable(SimConstants.CHANCE_TO_HEAL, Double.valueOf("25"));
+					disease.updateVariable(SimConstants.CHANCE_TO_HEAL, Double.valueOf("50"));
 					disease.updateVariable(SimConstants.CHANCE_TO_KILL, Double.valueOf("0.001"));
 				}
 				if (disease.getPeriod() > disease.getHealingTime()) {
-					disease.updateVariable(SimConstants.CHANCE_TO_HEAL, Double.valueOf("3"));
+					disease.updateVariable(SimConstants.CHANCE_TO_HEAL, Double.valueOf("5"));
 				}
 				if (disease.getPeriod() < disease.getHealingTime()) {
 					disease.updateVariable(SimConstants.CHANCE_TO_KILL, Double.valueOf("1"));
