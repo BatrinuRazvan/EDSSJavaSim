@@ -2,7 +2,6 @@ package com.edss.simulation.simulation;
 
 import java.sql.Date;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -42,7 +41,8 @@ public class Simulation {
 		this.elderlyCount = numberOfAgents * 198 / 1000;
 		this.adultsCount = numberOfAgents - childrenCount - elderlyCount;
 		this.numberOfSickAtStart = numberOfSickAtStart;
-		this.susceptibleAgents = numberOfAgents - numberOfSickAtStart;
+		Simulation.susceptibleAgents = numberOfAgents - numberOfSickAtStart;
+		Simulation.sickAgents = numberOfSickAtStart;
 	}
 
 	public void runSimulation() {
@@ -54,9 +54,10 @@ public class Simulation {
 		while (dayCounter != simulationPeriodDays) {
 
 			resetDailyVariables();
+			List<Agent> agentsToRemove = new ArrayList<>();
 
 			for (Agent agent : agents) {
-				if (checkIfAgentDies(agent)) {
+				if (checkIfAgentDies(agent, agentsToRemove)) {
 					Hospital.getHospital().removeAgent(agent);
 					updateGlobalVariables(SimConstants.ADD_DEAD, SimConstants.REMOVE_SICK);
 					continue;
@@ -79,6 +80,8 @@ public class Simulation {
 				}
 			}
 
+			agents.removeAll(agentsToRemove);
+
 			CentralLocation.getCentralLocation().meetAgentsAtCentralLocation(outsideAgents);
 			meetAgents();
 
@@ -95,17 +98,17 @@ public class Simulation {
 		dailyNewSick = 0;
 		dailyNewRecovered = 0;
 		dailyNewDead = 0;
+		outsideAgents = new ArrayList<>();
 	}
 
 	private void meetAgents() {
-		Collections.shuffle(outsideAgents);
 		for (int iterator = 0; iterator < outsideAgents.size() / 2; iterator++) {
 
-			Agent agent1 = outsideAgents.get(0);
-			Agent agent2 = outsideAgents.get(1);
+			Agent agent1 = outsideAgents.get(2 * iterator);
+			Agent agent2 = outsideAgents.get(2 * iterator + 1);
 			Random infectionAndImmunity = new Random();
 
-			if (!SimHelper.isOneOfAgentsSick(agent1, agent2)) {
+			if (!SimHelper.isOneOfAgentsSickOrBoth(agent1, agent2)) {
 				continue;
 			}
 			if (agent1.isInfectious()
@@ -125,15 +128,14 @@ public class Simulation {
 					updateGlobalVariables(SimConstants.REMOVE_SUSCEPTIBLE, SimConstants.ADD_SICK);
 				}
 			}
-
 		}
 	}
 
-	private boolean checkIfAgentDies(Agent agent) {
+	private boolean checkIfAgentDies(Agent agent, List<Agent> agentsToRemove) {
 		if (agent.isSick()) { // check added for faster processing
 			Random kill = new Random();
 			if (kill.nextInt(0, 100) < agent.getChanceToBeKilled()) {
-				agents.remove(agent);
+				agentsToRemove.add(agent);
 				return true;
 			}
 		}

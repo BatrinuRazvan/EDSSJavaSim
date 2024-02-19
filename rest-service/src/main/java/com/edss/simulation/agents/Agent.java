@@ -17,9 +17,8 @@ public abstract class Agent {
 	protected boolean isInfectious;
 	protected boolean isRecovered;
 	protected AgeGroup ageGroup;
-	protected float immunity;
+	protected double immunity;
 	protected boolean ableToMeet;
-	protected boolean isAlive;
 	protected boolean isHospitalized;
 	protected int chanceToGoOut;
 
@@ -29,7 +28,7 @@ public abstract class Agent {
 		this.isInfectious = isInfectious;
 		this.isRecovered = false;
 		this.ableToMeet = true;
-		this.isAlive = true;
+		this.chanceToGoOut = 60;
 	}
 
 	public boolean isSick() {
@@ -56,7 +55,7 @@ public abstract class Agent {
 		this.chanceToGoOut = chanceToGoOut;
 	}
 
-	public float getImmunity() {
+	public double getImmunity() {
 		return immunity;
 	}
 
@@ -64,22 +63,22 @@ public abstract class Agent {
 		this.immunity = immunity;
 	}
 
-	public float getChanceToTransmitDisease() {
+	public double getChanceToTransmitDisease() {
 		return this.getDisease().getChanceToTransmit();
 	}
 
-	public float getChanceToHealDisease() {
+	public double getChanceToHealDisease() {
 		return this.getDisease().getChanceToHeal();
 	}
 
-	public float getChanceToBeKilled() {
+	public double getChanceToBeKilled() {
 		return this.getDisease().getChanceToKill();
 	}
 
 	public boolean willHeal() {
 		if (isSick && disease.hasIncubated()) {
 			Random heal = new Random();
-			if (heal.nextInt(0, 100) <= disease.getChanceToHeal()) {
+			if (heal.nextDouble(0, 100) <= getChanceToHealDisease()) {
 				isSick = false;
 				isRecovered = true;
 				isInfectious = false;
@@ -117,7 +116,7 @@ public abstract class Agent {
 			isHospitalized = true;
 			Hospital.getHospital().addNormalBedAgent(this);
 			disease.updateVariable(SimConstants.CHANCE_TO_KILL_NORMAL_BED);
-			disease.updateVariable(SimConstants.CHANCE_TO_AGGRAVATE, 25.0f);
+			disease.updateVariable(SimConstants.CHANCE_TO_AGGRAVATE, Double.valueOf("25"));
 		}
 	}
 
@@ -144,10 +143,11 @@ public abstract class Agent {
 
 	public void checkIfGetsSickAtCentralLocation() {
 		Random infectionAndImmunity = new Random();
-		if (infectionAndImmunity.nextFloat(0, 100) <= SimConstants.chanceToTransmitDisease / 2) {
-			if (infectionAndImmunity.nextFloat(0, 100) > this.getImmunity()) {
+		if (infectionAndImmunity.nextDouble(0, 100) <= SimConstants.chanceToTransmitDisease / 2) {
+			if (infectionAndImmunity.nextDouble(0, 100) > this.getImmunity()) {
 				Disease disease = new Disease();
 				this.initDisease(disease);
+				isSick = true;
 				Simulation.updateGlobalVariables(SimConstants.REMOVE_SUSCEPTIBLE, SimConstants.ADD_SICK);
 			}
 		}

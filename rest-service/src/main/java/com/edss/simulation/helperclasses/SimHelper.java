@@ -51,12 +51,15 @@ public class SimHelper {
 		return null;
 	}
 
-	public static boolean isOneOfAgentsSick(Agent agent1, Agent agent2) {
+	public static boolean isOneOfAgentsSickOrBoth(Agent agent1, Agent agent2) {
 //		check to see if one of the agents is sick, otherwise there is no point
 		if (agent1.isSick() && !agent2.isSick()) {
 			return true;
 		}
 		if (agent2.isSick() && !agent1.isSick()) {
+			return true;
+		}
+		if (agent2.isSick() && agent1.isSick()) {
 			return true;
 		}
 		return false;
@@ -85,7 +88,7 @@ public class SimHelper {
 
 			try (PreparedStatement preparedStatement = connection.prepareStatement(insertQuery)) {
 				preparedStatement.setInt(1, dayIncrement);
-				preparedStatement.setDate(2, date);
+				preparedStatement.setDate(2, Date.valueOf("2022-11-05"));
 				preparedStatement.setInt(3, deadAgentsTotal);
 				preparedStatement.setInt(4, deadAgentsDaily);
 				preparedStatement.setInt(5, sickAgentsTotal);
@@ -94,7 +97,7 @@ public class SimHelper {
 				preparedStatement.setInt(8, recoveredAgentsDaily);
 				preparedStatement.setInt(9, 0);// totalHospitalizations
 				preparedStatement.setInt(10, 0);// dailyHospitalizations
-				preparedStatement.setFloat(11, 0);// maskUse
+				preparedStatement.setFloat(11, 0.0f);// maskUse
 				preparedStatement.setLong(12, 0);// totalVaccinations
 				preparedStatement.setInt(13, 0);// dailyVaccinations
 				preparedStatement.setInt(14, Hospital.getHospital().getTotalNormalBeds());

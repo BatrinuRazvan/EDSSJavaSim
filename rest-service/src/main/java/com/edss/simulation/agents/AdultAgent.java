@@ -20,25 +20,25 @@ public class AdultAgent extends Agent {
 			// case normal - after incubation
 			if (disease.hasIncubated() && !isHospitalized) {
 				if (disease.getPeriod() == disease.getHealingTime()) {
-					disease.updateVariable(SimConstants.CHANCE_TO_HEAL, 50.0f);
-					disease.updateVariable(SimConstants.CHANCE_TO_KILL, 0.01f);
+					disease.updateVariable(SimConstants.CHANCE_TO_HEAL, Double.valueOf("50"));
+					disease.updateVariable(SimConstants.CHANCE_TO_KILL, Double.valueOf("0.01"));
 				}
 				if (disease.getPeriod() > disease.getHealingTime()) {
-					disease.updateVariable(SimConstants.CHANCE_TO_HEAL, 2.0f);
+					disease.updateVariable(SimConstants.CHANCE_TO_HEAL, Double.valueOf("2"));
 				}
 				selfQuarantine();
 			}
 			// disease flow while in hospital
 			if (disease.hasIncubated() && isHospitalized) {
 				if (disease.getPeriod() == disease.getHealingTime()) {
-					disease.updateVariable(SimConstants.CHANCE_TO_HEAL, 25.0f);
-					disease.updateVariable(SimConstants.CHANCE_TO_KILL, 0.01f);
+					disease.updateVariable(SimConstants.CHANCE_TO_HEAL, Double.valueOf("25"));
+					disease.updateVariable(SimConstants.CHANCE_TO_KILL, Double.valueOf("0.01"));
 				}
 				if (disease.getPeriod() > disease.getHealingTime()) {
-					disease.updateVariable(SimConstants.CHANCE_TO_HEAL, 3.0f);
+					disease.updateVariable(SimConstants.CHANCE_TO_HEAL, Double.valueOf("3"));
 				}
 				if (disease.getPeriod() < disease.getHealingTime()) {
-					disease.updateVariable(SimConstants.CHANCE_TO_KILL, 1.0f);
+					disease.updateVariable(SimConstants.CHANCE_TO_KILL, Double.valueOf("1"));
 				}
 			}
 		}
@@ -47,7 +47,7 @@ public class AdultAgent extends Agent {
 	@Override
 	public void initImmunity() {
 		Random immuneSystem = new Random();
-		this.immunity = immuneSystem.nextInt(70 - 35) + 35;
+		this.immunity = immuneSystem.nextInt(75 - 35) + 35;
 	}
 
 	@Override

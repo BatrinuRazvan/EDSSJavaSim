@@ -1,5 +1,6 @@
 package com.edss.simulation.simulation;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.edss.simulation.agents.Agent;
@@ -8,8 +9,8 @@ public class Hospital {
 
 	private int normalBeds;
 	private int icuBeds;
-	private List<Agent> normalBedAgents;
-	private List<Agent> icuBedAgents;
+	private List<Agent> normalBedAgents = new ArrayList<>();
+	private List<Agent> icuBedAgents = new ArrayList<>();
 	private static Hospital hospital = null;
 
 	public Hospital(int numberOfAgents) {

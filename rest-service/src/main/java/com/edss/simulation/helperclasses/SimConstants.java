@@ -5,7 +5,7 @@ public class SimConstants {
 	public static final String NAME_OF_DISEASE = "EPIDEMIC";
 
 	public static int standardIncubationTimeDisease = 6;
-	public static float chanceToTransmitDisease = 50;
+	public static float chanceToTransmitDisease = 70;
 	public static int healingTimeDisease = 15;
 	public static float initialChanceToHeal = 0;
 	public static float initialChanceToKill = 0;
@@ -30,9 +30,9 @@ public class SimConstants {
 
 	public static int chanceForAsymptomatic = 5;
 
-	public static float childAggravationChance = 0.0f;
-	public static float adultAggravationChance = 0.0f;
-	public static float elderAggravationChance = 0.0f;
+	public static double childAggravationChance = Double.valueOf("0.01");
+	public static double adultAggravationChance = Double.valueOf("0.05");
+	public static double elderAggravationChance = Double.valueOf("0.08");
 
 	public static int chanceToSelfQuarantine = 95; // 95% chance to self quarantine
 
