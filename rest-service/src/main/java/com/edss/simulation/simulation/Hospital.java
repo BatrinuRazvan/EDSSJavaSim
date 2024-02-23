@@ -9,6 +9,8 @@ public class Hospital {
 
 	private int normalBeds;
 	private int icuBeds;
+	private int dailyHospitalization;
+	private int totalHospitalizations;
 	private List<Agent> normalBedAgents = new ArrayList<>();
 	private List<Agent> icuBedAgents = new ArrayList<>();
 	private static Hospital hospital = null;
@@ -42,25 +44,43 @@ public class Hospital {
 		return icuBedAgents;
 	}
 
+	public int getTotalHospitalizations() {
+		return totalHospitalizations;
+	}
+
+	public int getDailyHospitalization() {
+		return dailyHospitalization;
+	}
+
 	public void addNormalBedAgent(Agent agent) {
-		normalBeds = getTotalNormalBeds() + 1;
+		dailyHospitalization += 1;
+		totalHospitalizations += 1;
 		normalBedAgents.add(agent);
 	}
 
 	public void addIcuBedAgent(Agent agent) {
-		icuBeds = getTotalIcuBeds() + 1;
 		icuBedAgents.add(agent);
 	}
 
 	public void removeAgent(Agent agent) {
 		if (normalBedAgents.contains(agent)) {
 			normalBedAgents.remove(agent);
-			normalBeds = getTotalNormalBeds() + 1;
 		}
 		if (icuBedAgents.contains(agent)) {
 			icuBedAgents.remove(agent);
-			icuBeds = getTotalIcuBeds() + 1;
 		}
+	}
+
+	public void resetDailyVariables() {
+		dailyHospitalization = 0;
+	}
+
+	public static boolean hasFreeIcuBeds() {
+		return getHospital().icuBedAgents.size() <= getHospital().icuBeds;
+	}
+
+	public static boolean hasFreeNormalBeds() {
+		return getHospital().icuBedAgents.size() <= getHospital().icuBeds;
 	}
 
 }

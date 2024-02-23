@@ -80,7 +80,13 @@ public class Disease {
 			chanceToKill += 5;
 			break;
 		case "CHANCE_TO_KILL_ICU_BED":
+			chanceToKill += 3;
+			break;
+		case "CHANCE_TO_KILL_NO_ICU_AVAILABLE":
 			chanceToKill += 10;
+			break;
+		case "CHANCE_TO_KILL_NO_NORMAL_AVAILABLE":
+			chanceToKill += 7;
 			break;
 		case "CHANCE_TO_HEAL":
 			chanceToHeal += optinalIncrementer[0];
@@ -98,6 +104,10 @@ public class Disease {
 
 	public void incrementPeriod() {
 		periodOfDisease += 1;
+	}
+
+	public DiseaseState getState() {
+		return state;
 	}
 
 }

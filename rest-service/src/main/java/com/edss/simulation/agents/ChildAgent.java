@@ -24,7 +24,7 @@ public class ChildAgent extends Agent {
 					disease.updateVariable(SimConstants.CHANCE_TO_KILL, Double.valueOf("0.001"));
 				}
 				if (disease.getPeriod() > disease.getHealingTime()) {
-					disease.updateVariable(SimConstants.CHANCE_TO_HEAL, Double.valueOf("10"));
+					disease.updateVariable(SimConstants.CHANCE_TO_HEAL, Double.valueOf("13"));
 				}
 				selfQuarantine();
 			}

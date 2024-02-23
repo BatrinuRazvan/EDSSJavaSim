@@ -19,11 +19,11 @@ public class ElderAgent extends Agent {
 		if (disease != null && immunity < 100) {
 			if (disease.hasIncubated() && !isHospitalized) {
 				if (disease.getPeriod() == disease.getHealingTime()) {
-					disease.updateVariable(SimConstants.CHANCE_TO_HEAL, Double.valueOf("50"));
+					disease.updateVariable(SimConstants.CHANCE_TO_HEAL, Double.valueOf("40"));
 					disease.updateVariable(SimConstants.CHANCE_TO_KILL, Double.valueOf("0.08"));
 				}
 				if (disease.getPeriod() > disease.getHealingTime()) {
-					disease.updateVariable(SimConstants.CHANCE_TO_HEAL, Double.valueOf("2"));
+					disease.updateVariable(SimConstants.CHANCE_TO_HEAL, Double.valueOf("10"));
 				}
 				selfQuarantine();
 			}
@@ -51,8 +51,9 @@ public class ElderAgent extends Agent {
 
 	@Override
 	public void initDisease(Disease disease) {
-		this.disease = disease;
-		this.disease.setChanceToAggravate(SimConstants.elderAggravationChance);
+		if (this.disease == null) {
+			this.disease = disease;
+			this.disease.setChanceToAggravate(SimConstants.elderAggravationChance);
+		}
 	}
-
 }

@@ -23,7 +23,7 @@ public class Simulation {
 	private int elderlyCount;
 	private int numberOfSickAtStart;
 	private static int susceptibleAgents;
-	private static int sickAgents;
+	private static int totalSickAgents;
 	private static int deadAgents;
 	private static int recoveredAgents;
 	private static int dailyNewSick;
@@ -31,6 +31,11 @@ public class Simulation {
 	private static int dailyNewRecovered;
 	private List<Agent> agents = new ArrayList<>();
 	private List<Agent> outsideAgents = new ArrayList<>();
+	private boolean isRunning;
+
+	private Mask maskUse;
+	private boolean enforceMaskUse;
+	private boolean disableMaskUse;
 
 	public Simulation(int simulationPeriodMonths, int numberOfAgents, int numberOfSickAtStart) {
 		this.dayCounter = 0;
@@ -42,7 +47,13 @@ public class Simulation {
 		this.adultsCount = numberOfAgents - childrenCount - elderlyCount;
 		this.numberOfSickAtStart = numberOfSickAtStart;
 		Simulation.susceptibleAgents = numberOfAgents - numberOfSickAtStart;
-		Simulation.sickAgents = numberOfSickAtStart;
+		Simulation.totalSickAgents = numberOfSickAtStart;
+		Simulation.deadAgents = 0;
+		Simulation.recoveredAgents = 0;
+		this.isRunning = true;
+		this.maskUse = new Mask(numberOfAgents);
+		this.enforceMaskUse = false;
+		this.disableMaskUse = false;
 	}
 
 	public void runSimulation() {
@@ -51,19 +62,20 @@ public class Simulation {
 		SimHelper.initalizeHospital(numberOfAgents);
 		SimHelper.initalizeCentralLocation();
 
-		while (dayCounter != simulationPeriodDays) {
+		while (dayCounter != simulationPeriodDays && isRunning) {
 
+			SimHelper.checkIsRunning();
 			resetDailyVariables();
 			List<Agent> agentsToRemove = new ArrayList<>();
 
 			for (Agent agent : agents) {
 				if (checkIfAgentDies(agent, agentsToRemove)) {
 					Hospital.getHospital().removeAgent(agent);
-					updateGlobalVariables(SimConstants.ADD_DEAD, SimConstants.REMOVE_SICK);
+					updateGlobalVariables(SimConstants.ADD_DEAD);
 					continue;
 				}
 				if (agent.willHeal()) {
-					updateGlobalVariables(SimConstants.REMOVE_SICK, SimConstants.ADD_RECOVERED);
+					updateGlobalVariables(SimConstants.ADD_RECOVERED);
 				}
 
 				agent.updateStateOfDisease();
@@ -74,7 +86,7 @@ public class Simulation {
 				agent.checkIfAbleToMeet();
 				if (agent.ableToMeet()) {
 					Random goOut = new Random();
-					if (agent.getChanceToGoOut() >= goOut.nextInt(0, 100)) {
+					if (goOut.nextInt(0, 100) <= agent.getChanceToGoOut()) {
 						outsideAgents.add(agent);
 					}
 				}
@@ -86,9 +98,11 @@ public class Simulation {
 			meetAgents();
 
 			dayCounter += 1;
-			SimHelper.dailyStats(dayCounter, todaysDate, susceptibleAgents, sickAgents, recoveredAgents, deadAgents,
-					dailyNewSick, dailyNewRecovered, dailyNewDead, Hospital.getHospital().getNormalBedAgents().size(),
-					Hospital.getHospital().getIcuBedAgents().size());
+			SimHelper.dailyStats(dayCounter, todaysDate, susceptibleAgents, totalSickAgents, recoveredAgents,
+					deadAgents, dailyNewSick, dailyNewRecovered, dailyNewDead,
+					Hospital.getHospital().getNormalBedAgents().size(), Hospital.getHospital().getIcuBedAgents().size(),
+					Hospital.getHospital().getTotalHospitalizations(),
+					Hospital.getHospital().getDailyHospitalization());
 			setTodaysDate(SimHelper.nextDay(todaysDate));
 		}
 
@@ -99,6 +113,7 @@ public class Simulation {
 		dailyNewRecovered = 0;
 		dailyNewDead = 0;
 		outsideAgents = new ArrayList<>();
+		Hospital.getHospital().resetDailyVariables();
 	}
 
 	private void meetAgents() {
@@ -108,12 +123,12 @@ public class Simulation {
 			Agent agent2 = outsideAgents.get(2 * iterator + 1);
 			Random infectionAndImmunity = new Random();
 
-			if (!SimHelper.isOneOfAgentsSickOrBoth(agent1, agent2)) {
+			if (!SimHelper.isOneOfAgentsSick(agent1, agent2)) {
 				continue;
 			}
 			if (agent1.isInfectious()
-					&& infectionAndImmunity.nextFloat(0, 100) <= agent1.getChanceToTransmitDisease()) {
-				if (infectionAndImmunity.nextFloat(0, 100) > agent2.getImmunity()) {
+					&& infectionAndImmunity.nextDouble(0, 100) <= agent1.getChanceToTransmitDisease()) {
+				if (infectionAndImmunity.nextDouble(0, 100) > agent2.getImmunity()) {
 					Disease disease = new Disease();
 					agent2.initDisease(disease);
 					updateGlobalVariables(SimConstants.REMOVE_SUSCEPTIBLE, SimConstants.ADD_SICK);
@@ -121,8 +136,8 @@ public class Simulation {
 			}
 
 			if (agent2.isInfectious()
-					&& infectionAndImmunity.nextFloat(0, 100) <= agent2.getChanceToTransmitDisease()) {
-				if (infectionAndImmunity.nextFloat(0, 100) > agent2.getImmunity()) {
+					&& infectionAndImmunity.nextDouble(0, 100) <= agent2.getChanceToTransmitDisease()) {
+				if (infectionAndImmunity.nextDouble(0, 100) > agent2.getImmunity()) {
 					Disease disease = new Disease();
 					agent1.initDisease(disease);
 					updateGlobalVariables(SimConstants.REMOVE_SUSCEPTIBLE, SimConstants.ADD_SICK);
@@ -190,7 +205,7 @@ public class Simulation {
 				dailyNewDead += 1;
 				break;
 			case "ADD_SICK":
-				sickAgents += 1;
+				totalSickAgents += 1;
 				dailyNewSick += 1;
 				break;
 			case "ADD_RECOVERED":
@@ -203,9 +218,6 @@ public class Simulation {
 			case "REMOVE_DEAD":
 				deadAgents -= 1;
 				break;
-			case "REMOVE_SICK":
-				sickAgents -= 1;
-				break;
 
 			default:
 				throw new IllegalArgumentException("Unexpected value: " + updateGlobal);
@@ -217,4 +229,9 @@ public class Simulation {
 	public void setTodaysDate(Date todaysDate) {
 		this.todaysDate = todaysDate;
 	}
+
+	public void resetSimulation() {
+		isRunning = false;
+	}
+
 }

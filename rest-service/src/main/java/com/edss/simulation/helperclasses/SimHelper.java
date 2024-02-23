@@ -19,6 +19,7 @@ public class SimHelper {
 	private static String JDBC_URL = "jdbc:mysql://localhost:3306/edss";
 	private static String USERNAME = "root";
 	private static String PASSWORD = "1234";
+	private static boolean isPaused = false;
 
 	public static int initMonthsToDays(int simulationPeriodMonths) {
 
@@ -51,15 +52,12 @@ public class SimHelper {
 		return null;
 	}
 
-	public static boolean isOneOfAgentsSickOrBoth(Agent agent1, Agent agent2) {
+	public static boolean isOneOfAgentsSick(Agent agent1, Agent agent2) {
 //		check to see if one of the agents is sick, otherwise there is no point
 		if (agent1.isSick() && !agent2.isSick()) {
 			return true;
 		}
 		if (agent2.isSick() && !agent1.isSick()) {
-			return true;
-		}
-		if (agent2.isSick() && agent1.isSick()) {
 			return true;
 		}
 		return false;
@@ -80,7 +78,8 @@ public class SimHelper {
 
 	public static void dailyStats(int dayIncrement, Date date, int susceptibleAgentsTotal, int sickAgentsTotal,
 			int recoveredAgentsTotal, int deadAgentsTotal, int sickAgentsDaily, int recoveredAgentsDaily,
-			int deadAgentsDaily, int normalBedOcc, int icuBedOcc) {
+			int deadAgentsDaily, int normalBedOcc, int icuBedOcc, int totalHospitalizations,
+			int dailyHospitalizations) {
 
 		try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD)) {
 
@@ -95,8 +94,8 @@ public class SimHelper {
 				preparedStatement.setInt(6, sickAgentsDaily);
 				preparedStatement.setInt(7, recoveredAgentsTotal);
 				preparedStatement.setInt(8, recoveredAgentsDaily);
-				preparedStatement.setInt(9, 0);// totalHospitalizations
-				preparedStatement.setInt(10, 0);// dailyHospitalizations
+				preparedStatement.setInt(9, totalHospitalizations);
+				preparedStatement.setInt(10, dailyHospitalizations);
 				preparedStatement.setFloat(11, 0.0f);// maskUse
 				preparedStatement.setLong(12, 0);// totalVaccinations
 				preparedStatement.setInt(13, 0);// dailyVaccinations
@@ -140,6 +139,40 @@ public class SimHelper {
 			e.printStackTrace();
 		}
 
+	}
+
+	public static void resetDatabase() {
+
+		try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+				Statement statement = connection.createStatement()) {
+
+			statement.executeUpdate("DROP TABLE IF EXISTS SIMULATION");
+
+			System.out.println("SIMULATION reset.");
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public static void checkIsRunning() {
+		if (isPaused) {
+			try {
+				Thread.sleep(1000);
+				checkIsRunning();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public static void pauseSimulation() {
+		isPaused = true;
+	}
+
+	public static void resumeSimulation() {
+		isPaused = false;
 	}
 
 }

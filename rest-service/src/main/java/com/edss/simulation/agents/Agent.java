@@ -23,12 +23,13 @@ public abstract class Agent {
 	protected int chanceToGoOut;
 
 	public Agent(boolean isInfectious) {
-		this.isSick = false;
+		this.isSick = isInfectious;
 		this.isSelfQuarantined = false;
 		this.isInfectious = isInfectious;
 		this.isRecovered = false;
 		this.ableToMeet = true;
 		this.chanceToGoOut = 60;
+		initDiseaseAtStart(isInfectious);
 	}
 
 	public boolean isSick() {
@@ -112,19 +113,28 @@ public abstract class Agent {
 	}
 
 	public void checkNeedsHospitalization() {
-		if (isSick && disease.aggravates(DiseaseState.NORMAL, DiseaseState.NEEDS_HOSPITAL)) {
-			isHospitalized = true;
-			Hospital.getHospital().addNormalBedAgent(this);
-			disease.updateVariable(SimConstants.CHANCE_TO_KILL_NORMAL_BED);
-			disease.updateVariable(SimConstants.CHANCE_TO_AGGRAVATE, Double.valueOf("25"));
+		if ((isSick && disease.aggravates(DiseaseState.NORMAL, DiseaseState.NEEDS_HOSPITAL))
+				|| (isSick && disease.getState().equals(DiseaseState.NEEDS_HOSPITAL) && !isHospitalized)) {
+			if (Hospital.hasFreeNormalBeds()) {
+				isHospitalized = true;
+				Hospital.getHospital().addNormalBedAgent(this);
+				disease.updateVariable(SimConstants.CHANCE_TO_KILL_NORMAL_BED);
+				disease.updateVariable(SimConstants.CHANCE_TO_AGGRAVATE, Double.valueOf("25"));
+			} else {
+				disease.updateVariable(SimConstants.CHANCE_TO_KILL_NO_NORMAL_AVAILABLE);
+			}
 		}
 	}
 
 	public void checkNeedsIcu() {
 		if (isSick && disease.aggravates(DiseaseState.NEEDS_HOSPITAL, DiseaseState.NEEDS_ICU)) {
-			Hospital.getHospital().removeAgent(this);
-			Hospital.getHospital().addIcuBedAgent(this);
-			disease.updateVariable(SimConstants.CHANCE_TO_KILL_ICU_BED);
+			if (Hospital.hasFreeIcuBeds()) {
+				Hospital.getHospital().removeAgent(this);
+				Hospital.getHospital().addIcuBedAgent(this);
+				disease.updateVariable(SimConstants.CHANCE_TO_KILL_ICU_BED);
+			} else {
+				disease.updateVariable(SimConstants.CHANCE_TO_KILL_NO_ICU_AVAILABLE);
+			}
 		}
 	}
 
@@ -135,13 +145,10 @@ public abstract class Agent {
 		}
 	}
 
-	public abstract void updateStateOfDisease();
-
-	public abstract void initImmunity();
-
-	public abstract void initDisease(Disease disease);
-
-	public void checkIfGetsSickAtCentralLocation() {
+	public boolean checkIfGetsSickAtCentralLocation() {
+		if (isSick) {
+			return true;
+		}
 		Random infectionAndImmunity = new Random();
 		if (infectionAndImmunity.nextDouble(0, 100) <= SimConstants.chanceToTransmitDisease / 2) {
 			if (infectionAndImmunity.nextDouble(0, 100) > this.getImmunity()) {
@@ -149,8 +156,22 @@ public abstract class Agent {
 				this.initDisease(disease);
 				isSick = true;
 				Simulation.updateGlobalVariables(SimConstants.REMOVE_SUSCEPTIBLE, SimConstants.ADD_SICK);
+				return true;
 			}
 		}
+		return false;
 	}
+
+	private void initDiseaseAtStart(boolean isInfectious) {
+		if (isInfectious) {
+			initDisease(new Disease());
+		}
+	}
+
+	public abstract void updateStateOfDisease();
+
+	public abstract void initImmunity();
+
+	public abstract void initDisease(Disease disease);
 
 }
