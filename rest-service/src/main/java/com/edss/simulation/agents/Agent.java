@@ -28,7 +28,7 @@ public abstract class Agent {
 		this.isInfectious = isInfectious;
 		this.isRecovered = false;
 		this.ableToMeet = true;
-		this.chanceToGoOut = 60;
+		this.chanceToGoOut = 40;
 		initDiseaseAtStart(isInfectious);
 	}
 
@@ -85,6 +85,7 @@ public abstract class Agent {
 				isInfectious = false;
 				setImmunity(100);
 				Hospital.getHospital().removeAgent(this);
+				disease = null;
 				return true;
 			}
 		}

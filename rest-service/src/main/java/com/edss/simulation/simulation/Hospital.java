@@ -76,11 +76,11 @@ public class Hospital {
 	}
 
 	public static boolean hasFreeIcuBeds() {
-		return getHospital().icuBedAgents.size() <= getHospital().icuBeds;
+		return getHospital().icuBedAgents.size() < getHospital().icuBeds;
 	}
 
 	public static boolean hasFreeNormalBeds() {
-		return getHospital().icuBedAgents.size() <= getHospital().icuBeds;
+		return getHospital().icuBedAgents.size() < getHospital().icuBeds;
 	}
 
 }

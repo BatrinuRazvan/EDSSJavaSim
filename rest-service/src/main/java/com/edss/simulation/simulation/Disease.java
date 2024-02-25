@@ -77,10 +77,10 @@ public class Disease {
 	public void updateVariable(String varibleToChange, Double... optinalIncrementer) {
 		switch (varibleToChange) {
 		case "CHANCE_TO_KILL_NORMAL_BED":
-			chanceToKill += 5;
+			chanceToKill += 3;
 			break;
 		case "CHANCE_TO_KILL_ICU_BED":
-			chanceToKill += 3;
+			chanceToKill += 5;
 			break;
 		case "CHANCE_TO_KILL_NO_ICU_AVAILABLE":
 			chanceToKill += 10;

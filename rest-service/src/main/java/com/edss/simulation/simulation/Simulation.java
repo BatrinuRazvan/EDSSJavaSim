@@ -65,6 +65,7 @@ public class Simulation {
 		while (dayCounter != simulationPeriodDays && isRunning) {
 
 			SimHelper.checkIsRunning();
+			maskUse.changeOnEnforcement(enforceMaskUse, disableMaskUse);
 			resetDailyVariables();
 			List<Agent> agentsToRemove = new ArrayList<>();
 

@@ -19,4 +19,14 @@ public class Mask {
 		this.cooldownNumberPerDay = (numberOfAgents * 8 / 10) / cooldownTime;
 	}
 
+	public void changeOnEnforcement(boolean enforceMaskUse, boolean disableMaskUse) {
+		if (enforceMaskUse) {
+
+		}
+
+		if (disableMaskUse) {
+
+		}
+	}
+
 }
