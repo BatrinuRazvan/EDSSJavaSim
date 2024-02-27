@@ -21,6 +21,7 @@ public abstract class Agent {
 	protected boolean ableToMeet;
 	protected boolean isHospitalized;
 	protected int chanceToGoOut;
+	protected boolean hasMask;
 
 	public Agent(boolean isInfectious) {
 		this.isSick = isInfectious;
@@ -29,6 +30,7 @@ public abstract class Agent {
 		this.isRecovered = false;
 		this.ableToMeet = true;
 		this.chanceToGoOut = 40;
+		this.hasMask = false;
 		initDiseaseAtStart(isInfectious);
 	}
 
@@ -62,6 +64,14 @@ public abstract class Agent {
 
 	public void setImmunity(float immunity) {
 		this.immunity = immunity;
+	}
+
+	public boolean hasMask() {
+		return hasMask;
+	}
+
+	public void setMask(boolean hasMask) {
+		this.hasMask = hasMask;
 	}
 
 	public double getChanceToTransmitDisease() {

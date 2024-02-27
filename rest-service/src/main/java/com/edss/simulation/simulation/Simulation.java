@@ -65,7 +65,10 @@ public class Simulation {
 		while (dayCounter != simulationPeriodDays && isRunning) {
 
 			SimHelper.checkIsRunning();
-			maskUse.changeOnEnforcement(enforceMaskUse, disableMaskUse);
+			enforceMaskUse = dayCounter == 20;
+			disableMaskUse = dayCounter == 30;
+			maskUse.changeOnEnforcement(enforceMaskUse, agents);
+			maskUse.checkDisablement(disableMaskUse, agents);
 			resetDailyVariables();
 			List<Agent> agentsToRemove = new ArrayList<>();
 
@@ -102,8 +105,8 @@ public class Simulation {
 			SimHelper.dailyStats(dayCounter, todaysDate, susceptibleAgents, totalSickAgents, recoveredAgents,
 					deadAgents, dailyNewSick, dailyNewRecovered, dailyNewDead,
 					Hospital.getHospital().getNormalBedAgents().size(), Hospital.getHospital().getIcuBedAgents().size(),
-					Hospital.getHospital().getTotalHospitalizations(),
-					Hospital.getHospital().getDailyHospitalization());
+					Hospital.getHospital().getTotalHospitalizations(), Hospital.getHospital().getDailyHospitalization(),
+					maskUse.getPercentageOfMaskUse(agents.size()));
 			setTodaysDate(SimHelper.nextDay(todaysDate));
 		}
 

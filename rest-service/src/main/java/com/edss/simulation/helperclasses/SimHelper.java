@@ -78,8 +78,8 @@ public class SimHelper {
 
 	public static void dailyStats(int dayIncrement, Date date, int susceptibleAgentsTotal, int sickAgentsTotal,
 			int recoveredAgentsTotal, int deadAgentsTotal, int sickAgentsDaily, int recoveredAgentsDaily,
-			int deadAgentsDaily, int normalBedOcc, int icuBedOcc, int totalHospitalizations,
-			int dailyHospitalizations) {
+			int deadAgentsDaily, int normalBedOcc, int icuBedOcc, int totalHospitalizations, int dailyHospitalizations,
+			double maskUse) {
 
 		try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD)) {
 
@@ -96,7 +96,7 @@ public class SimHelper {
 				preparedStatement.setInt(8, recoveredAgentsDaily);
 				preparedStatement.setInt(9, totalHospitalizations);
 				preparedStatement.setInt(10, dailyHospitalizations);
-				preparedStatement.setFloat(11, 0.0f);// maskUse
+				preparedStatement.setFloat(11, Float.valueOf(String.valueOf(maskUse)));// maskUse
 				preparedStatement.setLong(12, 0);// totalVaccinations
 				preparedStatement.setInt(13, 0);// dailyVaccinations
 				preparedStatement.setInt(14, Hospital.getHospital().getTotalNormalBeds());
