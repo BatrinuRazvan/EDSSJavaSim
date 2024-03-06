@@ -9,13 +9,13 @@ import com.edss.simulation.simulation.Simulation;
 @RestController
 public class SimulationController {
 
-	Simulation sim = new Simulation(10, 10000, 100);
+	Simulation sim = new Simulation(9, 10000, 100);
 
 	@PostMapping("/startSimulation")
 	public String startSimulation() {
 
-		SimHelper.initDatabase();
-		sim = new Simulation(10, 100000, 100);
+		SimHelper.initSimulatinDatabase();
+		sim = new Simulation(9, 100000, 100);
 		sim.runSimulation();
 
 		return "Simulation started";

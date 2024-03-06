@@ -6,7 +6,7 @@ public class RunnerSim {
 
 	public static void main(String[] args) {
 		Simulation sim = new Simulation(10, 500000, 100);
-		SimHelper.initDatabase();
+		SimHelper.initSimulatinDatabase();
 		sim.runSimulation();
 	}
 

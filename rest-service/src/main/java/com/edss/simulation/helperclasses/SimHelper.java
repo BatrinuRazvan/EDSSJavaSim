@@ -116,7 +116,7 @@ public class SimHelper {
 
 	}
 
-	public static void initDatabase() {
+	public static void initSimulatinDatabase() {
 
 		try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
 				Statement statement = connection.createStatement()) {
