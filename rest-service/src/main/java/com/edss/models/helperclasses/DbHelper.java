@@ -17,13 +17,13 @@ public class DbHelper {
 
 			statement.executeUpdate("DROP TABLE IF EXISTS SIMULATION");
 
-			String createTableQuery = "CREATE TABLE SIMULATION (" + "id INT AUTO_INCREMENT PRIMARY KEY,"
-					+ "TIMESTAMP DATETIME DEFAULT CURRENT_TIMESTAMP," + "username VARCHAR(255),"
+			String createTableQuery = "CREATE TABLE USERRESPONSES (" + "id INT AUTO_INCREMENT PRIMARY KEY,"
+					+ "TIMESTAMP DATETIME DEFAULT CURRENT_TIMESTAMP," + "USERNAME VARCHAR(255),"
 					+ "QUESTION VARCHAR(255)," + "RESPONSE VARCHAR(255)," + ")";
 
 			statement.executeUpdate(createTableQuery);
 
-			System.out.println("SIMULATION table created successfully.");
+			System.out.println("USERRESPONSES table created successfully.");
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -35,7 +35,7 @@ public class DbHelper {
 		try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
 				Statement statement = connection.createStatement()) {
 
-			String sqlStatement = "INSERT INTO user_responses (" + email + ", " + question + ", " + response
+			String sqlStatement = "INSERT INTO USERRESPONSES (" + email + ", " + question + ", " + response
 					+ ") VALUES (?, ?, ?)";
 
 			statement.executeUpdate(sqlStatement);
@@ -43,5 +43,25 @@ public class DbHelper {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public void initNotificationsDatabase() {
+		try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+				Statement statement = connection.createStatement()) {
+
+			statement.executeUpdate("DROP TABLE IF EXISTS SIMULATION");
+
+			String createTableQuery = "CREATE TABLE NOTIFICATIONS (" + "id INT AUTO_INCREMENT PRIMARY KEY,"
+					+ "TIMESTAMP DATETIME DEFAULT CURRENT_TIMESTAMP," + "CITY VARCHAR(255)," + "SEVERITY VARCHAR(255),"
+					+ "RANGEKM VARCHAR(255)," + "DESCRIPTION VARCHAR(255)," + ")";
+
+			statement.executeUpdate(createTableQuery);
+
+			System.out.println("NOTIFICATIONS table created successfully.");
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
 	}
 }
