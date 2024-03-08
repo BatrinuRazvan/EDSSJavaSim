@@ -27,6 +27,19 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		
+		<dependency>
+        <groupId>com.google.api-client</groupId>
+        <artifactId>google-api-client</artifactId>
+        <version>1.32.1</version> <!-- Check for the latest version -->
+    </dependency>
+
+    <!-- Google HTTP Client Library for Java with Jackson 2 support -->
+    <dependency>
+        <groupId>com.google.http-client</groupId>
+        <artifactId>google-http-client-jackson2</artifactId>
+        <version>1.40.1</version> <!-- Check for the latest version -->
+    </dependency>
 	</dependencies>
 
 	<build>

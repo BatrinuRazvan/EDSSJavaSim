@@ -1,4 +1,4 @@
-package com.edss.simulation.restservice.controller;
+package com.edss.restservice.controllers;
 
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;

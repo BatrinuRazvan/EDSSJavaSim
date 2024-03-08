@@ -1,4 +1,4 @@
-package com.edss.simulation.helperclasses;
+package com.edss.models.helperclasses;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -29,5 +29,19 @@ public class DbHelper {
 			e.printStackTrace();
 		}
 
+	}
+
+	public static void addUserRespons(String email, String question, String response) {
+		try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+				Statement statement = connection.createStatement()) {
+
+			String sqlStatement = "INSERT INTO user_responses (" + email + ", " + question + ", " + response
+					+ ") VALUES (?, ?, ?)";
+
+			statement.executeUpdate(sqlStatement);
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 }
