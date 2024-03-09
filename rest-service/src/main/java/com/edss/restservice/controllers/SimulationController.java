@@ -41,7 +41,7 @@ public class SimulationController {
 	public String resetSimulation() {
 
 		sim.resetSimulation();
-		SimHelper.resetDatabase();
+		SimHelper.resetSimulationDatabase();
 		SimHelper.resumeSimulation();
 
 		return "Simulation reset.";

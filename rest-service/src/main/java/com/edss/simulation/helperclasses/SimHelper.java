@@ -141,7 +141,7 @@ public class SimHelper {
 
 	}
 
-	public static void resetDatabase() {
+	public static void resetSimulationDatabase() {
 
 		try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
 				Statement statement = connection.createStatement()) {

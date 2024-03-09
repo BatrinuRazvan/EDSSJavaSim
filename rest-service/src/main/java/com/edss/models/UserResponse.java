@@ -7,7 +7,6 @@ public class UserResponse {
 	private String email;
 
 	public UserResponse(String question, String response, String email) {
-		super();
 		this.setQuestion(question);
 		this.setResponse(response);
 		this.setEmail(email);
