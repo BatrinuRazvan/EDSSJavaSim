@@ -60,8 +60,8 @@ public class DbHelper {
 
 			String createTableQuery = "CREATE TABLE " + Constants.NOTIFICATIONS_TABLE + " ("
 					+ Constants.ID_AUTO_INCREMENT + Constants.TIMESTAMP_CURRENT + "CITY VARCHAR(255),"
-					+ "TITLE VARCHAR(255)" + "SEVERITY VARCHAR(255)," + "RANGEKM INT," + "DESCRIPTION VARCHAR(255),"
-					+ ")";
+					+ "TITLE VARCHAR(255)" + "COLOR VARCHAR(255)," + "SEVERITY VARCHAR(255)," + "RANGEKM INT,"
+					+ "DESCRIPTION VARCHAR(255)," + ")";
 
 			statement.executeUpdate(createTableQuery);
 
