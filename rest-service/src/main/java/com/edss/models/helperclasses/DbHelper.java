@@ -2,11 +2,15 @@ package com.edss.models.helperclasses;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import com.edss.models.CityMarker;
 
 public class DbHelper {
 
@@ -113,6 +117,27 @@ public class DbHelper {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+
+	}
+
+	public static List<CityMarker> getCities() {
+		try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+				Statement statement = connection.createStatement()) {
+
+			String createTableQuery = "SELECT * FROM " + Constants.MARKERS_TABLE;
+
+			ResultSet result = statement.executeQuery(createTableQuery);
+			List<CityMarker> markers = new ArrayList<>();
+			while (result.next()) {
+				CityMarker marker = new CityMarker(result.getString(1), result.getDouble(2), result.getDouble(3));
+				markers.add(marker);
+			}
+			return markers;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
 
 	}
 }

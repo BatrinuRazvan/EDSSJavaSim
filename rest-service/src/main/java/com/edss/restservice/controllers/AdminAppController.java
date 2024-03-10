@@ -30,4 +30,12 @@ public class AdminAppController {
 		return ResponseEntity.ok().build();
 	}
 
+	@GetMapping("/cities/getCities")
+	public ResponseEntity<?> getCities() {
+
+		DbHelper.getCities();
+
+		return ResponseEntity.ok().build();
+	}
+
 }
