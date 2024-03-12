@@ -1,4 +1,4 @@
-package com.edss.simulation.restservice;
+package com.edss.restservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

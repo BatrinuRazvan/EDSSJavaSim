@@ -7,10 +7,13 @@ public class MessageNotification {
 	private String severity;
 	private int range;
 	private String description;
+	private String color;
 
-	public MessageNotification(String title, String city, String severity, int range, String description) {
+	public MessageNotification(String title, String city, String color, String severity, int range,
+			String description) {
 		this.title = title;
 		this.city = city;
+		this.color = color;
 		this.severity = severity;
 		this.range = range;
 		this.description = description;
@@ -54,6 +57,14 @@ public class MessageNotification {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public String getColor() {
+		return color;
+	}
+
+	public void setColor(String color) {
+		this.color = color;
 	}
 
 }
