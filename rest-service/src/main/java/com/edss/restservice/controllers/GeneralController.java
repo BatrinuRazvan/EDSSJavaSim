@@ -1,29 +1,28 @@
 package com.edss.restservice.controllers;
 
 import java.util.Collections;
+import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.edss.models.UserResponse;
+import com.edss.models.CityMarker;
+import com.edss.models.helperclasses.DbHelper;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 
 @RestController
-public class ChatAssistantControler {
+public class GeneralController {
 
-	@PostMapping("/saveResponse")
-	public ResponseEntity<?> saveResponse(@RequestBody UserResponse userResponse) {
-		// Assuming you have a DataSource or JdbcTemplate configured
-
-//		DbHelper.addUserRespons(userResponse.getEmail(), userResponse.getQuestion(), userResponse.getResponse());
-
-		return ResponseEntity.ok().build();
+	@GetMapping("/cities")
+	public List<CityMarker> getCities() {
+		return DbHelper.getCities();
 	}
 
 // POST endpoint to receive the ID token from the frontend

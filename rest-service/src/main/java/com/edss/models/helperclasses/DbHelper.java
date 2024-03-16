@@ -13,12 +13,14 @@ import java.util.Set;
 
 import com.edss.models.CityMarker;
 import com.edss.models.MessageNotification;
+import com.edss.models.UserLocation;
 
 public class DbHelper {
 
-	private static String JDBC_URL = "jdbc:mysql://localhost:3306/edss";
-	private static String USERNAME = "root";
-	private static String PASSWORD = "1234";
+	private static final String JDBC_URL = "jdbc:mysql://localhost:3306/edss";
+	private static final String USERNAME = "root";
+	private static final String PASSWORD = "1234";
+	private static Double baseDegreeChange = 0.09;
 
 	public void initUserResponsesDatabase() {
 		try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
@@ -63,7 +65,7 @@ public class DbHelper {
 			String createTableQuery = "CREATE TABLE " + Constants.NOTIFICATIONS_TABLE + " ("
 					+ Constants.ID_AUTO_INCREMENT + Constants.TIMESTAMP_CURRENT + "CITY VARCHAR(255),"
 					+ "TITLE VARCHAR(255)," + "COLOR VARCHAR(255)," + "SEVERITY VARCHAR(255)," + "RANGEKM INT,"
-					+ "DESCRIPTION VARCHAR(255) " + ")";
+					+ "DESCRIPTION VARCHAR(255)," + "DEGREECHANGE DOUBLE" + ")";
 
 			statement.executeUpdate(createTableQuery);
 
@@ -80,20 +82,19 @@ public class DbHelper {
 // Assuming Constants.NOTIFICATIONS_TABLE is your table name and it has columns 
 // city, title, color, severity, range_km, and description accordingly.
 		String sqlStatement = "INSERT INTO " + Constants.NOTIFICATIONS_TABLE
-				+ " (city, title, color, severity, rangekm, description) VALUES (?, ?, ?, ?, ?, ?)";
+				+ " (city, title, color, severity, rangekm, description, degreechange) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
 		try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
 				PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement)) {
 
-// Set the values for each placeholder
 			preparedStatement.setString(1, city);
 			preparedStatement.setString(2, title);
 			preparedStatement.setString(3, color);
 			preparedStatement.setString(4, severity);
-			preparedStatement.setInt(5, rangeKm); // rangeKm is treated as an integer
+			preparedStatement.setInt(5, rangeKm);
 			preparedStatement.setString(6, description);
+			preparedStatement.setDouble(7, rangeKm * baseDegreeChange);
 
-// Execute the update
 			preparedStatement.executeUpdate();
 
 		} catch (SQLException e) {
@@ -156,6 +157,38 @@ public class DbHelper {
 	public static List<MessageNotification> getMessageNotifications() {
 		try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
 				Statement statement = connection.createStatement()) {
+
+			String createTableQuery = "SELECT * FROM " + Constants.NOTIFICATIONS_TABLE;
+
+			ResultSet result = statement.executeQuery(createTableQuery);
+			List<MessageNotification> messages = new ArrayList<>();
+			while (result.next()) {
+				MessageNotification message = new MessageNotification(result.getString(4), result.getString(3),
+						result.getString(5), result.getString(6), result.getInt(7), result.getString(8));
+				messages.add(message);
+			}
+			return messages;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+
+	}
+
+	public static List<MessageNotification> getLocalMessageNotifications(UserLocation userLocation) {
+		try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+				Statement statement = connection.createStatement()) {
+
+			double userLat = userLocation.getLatitude();
+			double userLon = userLocation.getLongitude();
+
+			String selectCity = "SELECT CITY FROM" + Constants.MARKERS_TABLE + "WHERE CAST( LATITUDE AS CHAR ) LIKE '"
+					+ (int) userLat + "%' AND CAST( LONGITUDE AS CHAR ) LIKE '" + (int) userLon + "%' ";
+			ResultSet resultCities = statement.executeQuery(selectCity);
+			while (resultCities.next()) {
+
+			}
 
 			String createTableQuery = "SELECT * FROM " + Constants.NOTIFICATIONS_TABLE;
 
