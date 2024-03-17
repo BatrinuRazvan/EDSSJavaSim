@@ -164,7 +164,8 @@ public class DbHelper {
 			List<MessageNotification> messages = new ArrayList<>();
 			while (result.next()) {
 				MessageNotification message = new MessageNotification(result.getString(4), result.getString(3),
-						result.getString(5), result.getString(6), result.getInt(7), result.getString(8));
+						result.getString(5), result.getString(6), result.getInt(7), result.getString(8),
+						result.getDouble(9));
 				messages.add(message);
 			}
 			return messages;
@@ -182,24 +183,37 @@ public class DbHelper {
 
 			double userLat = userLocation.getLatitude();
 			double userLon = userLocation.getLongitude();
+			List<MessageNotification> filteredMessages = new ArrayList<>();
 
-			String selectCity = "SELECT CITY FROM" + Constants.MARKERS_TABLE + "WHERE CAST( LATITUDE AS CHAR ) LIKE '"
+			String selectCity = "SELECT * FROM" + Constants.MARKERS_TABLE + "WHERE CAST( LATITUDE AS CHAR ) LIKE '"
 					+ (int) userLat + "%' AND CAST( LONGITUDE AS CHAR ) LIKE '" + (int) userLon + "%' ";
 			ResultSet resultCities = statement.executeQuery(selectCity);
+
 			while (resultCities.next()) {
+				CityMarker city = new CityMarker(resultCities.getString(2), resultCities.getDouble(3),
+						resultCities.getDouble(4));
+				String selectMessageNotification = "SELECT * FROM" + Constants.NOTIFICATIONS_TABLE + "WHERE CITY = '"
+						+ city.getCityName() + "' ";
+				ResultSet messagesForCity = statement.executeQuery(selectMessageNotification);
 
+				while (messagesForCity.next()) {
+
+					MessageNotification message = new MessageNotification(messagesForCity.getString(4),
+							messagesForCity.getString(3), messagesForCity.getString(5), messagesForCity.getString(6),
+							messagesForCity.getInt(7), messagesForCity.getString(8), messagesForCity.getDouble(9));
+
+					double upperLatThreshold = city.getLatitude() + message.getDegreeChange();
+					double lowerLatThreshold = city.getLatitude() - message.getDegreeChange();
+					if (userLat < upperLatThreshold && userLat > lowerLatThreshold) {
+						double upperLonThreshold = city.getLongitude() + message.getDegreeChange();
+						double lowerLonThreshold = city.getLongitude() - message.getDegreeChange();
+						if (userLat < upperLonThreshold && userLat > lowerLonThreshold) {
+							filteredMessages.add(message);
+						}
+					}
+				}
 			}
-
-			String createTableQuery = "SELECT * FROM " + Constants.NOTIFICATIONS_TABLE;
-
-			ResultSet result = statement.executeQuery(createTableQuery);
-			List<MessageNotification> messages = new ArrayList<>();
-			while (result.next()) {
-				MessageNotification message = new MessageNotification(result.getString(4), result.getString(3),
-						result.getString(5), result.getString(6), result.getInt(7), result.getString(8));
-				messages.add(message);
-			}
-			return messages;
+			return filteredMessages;
 
 		} catch (SQLException e) {
 			e.printStackTrace();

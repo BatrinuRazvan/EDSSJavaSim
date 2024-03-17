@@ -8,15 +8,17 @@ public class MessageNotification {
 	private int range;
 	private String description;
 	private String color;
+	private double degreeChange;
 
-	public MessageNotification(String title, String city, String color, String severity, int range,
-			String description) {
+	public MessageNotification(String title, String city, String color, String severity, int range, String description,
+			double degreeChange) {
 		this.title = title;
 		this.city = city;
 		this.color = color;
 		this.severity = severity;
 		this.range = range;
 		this.description = description;
+		this.setDegreeChange(degreeChange);
 	}
 
 	public String getTitle() {
@@ -65,6 +67,14 @@ public class MessageNotification {
 
 	public void setColor(String color) {
 		this.color = color;
+	}
+
+	public double getDegreeChange() {
+		return degreeChange;
+	}
+
+	public void setDegreeChange(double degreeChange) {
+		this.degreeChange = degreeChange;
 	}
 
 }
