@@ -10,6 +10,8 @@ public class Constants {
 	public static final String TIMESTAMP_CURRENT = "TIMESTAMP DATETIME DEFAULT CURRENT_TIMESTAMP,";
 	public static final String MARKERS_TABLE = "MARKERS";
 	public static final String NOTIFICATIONS_TABLE = "NOTIFICATIONS";
+	public static final String USERS_TABLE = "USERS";
+	public static final String SUBSCRIPTION_TABLE = "SUBSCRIPTION";
 
 	public static Map<String, List<Double>> cities = HelperMethods.initCities();
 

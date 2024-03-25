@@ -5,6 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.jose4j.json.internal.json_simple.JSONObject;
+
+import com.edss.models.MessageNotification;
+import com.edss.models.User;
+
 public class HelperMethods {
 
 	public static Map<String, List<Double>> initCities() {
@@ -22,4 +27,23 @@ public class HelperMethods {
 		return result;
 	}
 
+	public static boolean userAlreadyExists(User newUser) {
+//		List<User> allUsers = DbHelper.getAllUsers();
+//		return allUsers.stream().filter(user -> user.getUserId().equals(newUser.getUserId())).findAny().isPresent();
+		return false;
+	}
+
+	public static String constructPayload(MessageNotification notification) {
+		// Construct a JSON object from the notification details
+		JSONObject payloadJson = new JSONObject();
+		payloadJson.put("city", notification.getCity());
+		payloadJson.put("title", notification.getTitle());
+		payloadJson.put("color", notification.getColor());
+		payloadJson.put("severity", notification.getSeverity());
+		payloadJson.put("range", notification.getRange());
+		payloadJson.put("description", notification.getDescription());
+
+		// Return the stringified version of the JSON object
+		return payloadJson.toString();
+	}
 }

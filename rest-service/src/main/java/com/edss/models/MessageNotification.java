@@ -2,6 +2,7 @@ package com.edss.models;
 
 public class MessageNotification {
 
+	private String id;
 	private String title;
 	private String city;
 	private String severity;
@@ -10,8 +11,9 @@ public class MessageNotification {
 	private String color;
 	private double degreeChange;
 
-	public MessageNotification(String title, String city, String color, String severity, int range, String description,
-			double degreeChange) {
+	public MessageNotification(int id, String title, String city, String color, String severity, int range,
+			String description, double degreeChange) {
+		this.id = String.valueOf(id);
 		this.title = title;
 		this.city = city;
 		this.color = color;
@@ -75,6 +77,14 @@ public class MessageNotification {
 
 	public void setDegreeChange(double degreeChange) {
 		this.degreeChange = degreeChange;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
 	}
 
 }

@@ -1,6 +1,6 @@
 package com.edss.simulation.simulation;
 
-import com.edss.models.helperclasses.DbHelper;
+import com.edss.models.helperclasses.InitTablesHelper;
 
 public class RunnerSim {
 
@@ -9,7 +9,9 @@ public class RunnerSim {
 //		SimHelper.initSimulatinDatabase();
 //		sim.runSimulation();
 //		DbHelper.initMarkersDatabase();
-		DbHelper.initNotificationsDatabase();
+//		DbHelper.initNotificationsDatabase();
+//		DbHelper.initUsersTable();
+		InitTablesHelper.initUsersTable();
 	}
 
 }
