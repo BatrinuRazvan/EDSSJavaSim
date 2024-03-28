@@ -14,6 +14,7 @@ import com.edss.models.EdssSubscription;
 import com.edss.models.MessageNotification;
 import com.edss.models.User;
 import com.edss.models.UserLocation;
+import com.edss.models.UserResponse;
 
 public class DbHelper {
 
@@ -157,7 +158,7 @@ public class DbHelper {
 	public static void saveUser(User newUser) {
 
 		String sqlStatement = "INSERT INTO " + Constants.USERS_TABLE
-				+ " (id, email, latitude, longitude) VALUES (?, ?, ?, ?)";
+				+ " (userid, email, latitude, longitude) VALUES (?, ?, ?, ?)";
 
 		try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
 				PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement)) {
@@ -199,7 +200,8 @@ public class DbHelper {
 		// Assuming Constants.SUBSCRIPTION_TABLE holds the name of your table
 		// and you have columns named `endpoint`, `p256dh`, `auth`, and `user_id` (or
 		// similar) in your table
-		String sqlStatement = "UPDATE " + Constants.USERS_TABLE + " SET endpoint = ?, p256 = ?, auth = ? WHERE id = ?";
+		String sqlStatement = "UPDATE " + Constants.USERS_TABLE
+				+ " SET endpoint = ?, p256 = ?, auth = ? WHERE userid = ?";
 
 		try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
 				PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement)) {
@@ -295,6 +297,24 @@ public class DbHelper {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			return null;
+		}
+	}
+
+	public static void saveUserResponse(UserResponse response) {
+		String sqlStatement = "INSERT INTO " + Constants.USERRESPONSES_TABLE
+				+ " (userid, disaster, state) VALUES (?, ?, ?)";
+
+		try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+				PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement)) {
+
+			preparedStatement.setString(1, response.getUserId());
+			preparedStatement.setString(2, response.getDisaster());
+			preparedStatement.setString(3, response.getState());
+
+			preparedStatement.executeUpdate();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 	}
 

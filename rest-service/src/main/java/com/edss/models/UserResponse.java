@@ -2,37 +2,36 @@ package com.edss.models;
 
 public class UserResponse {
 
-	private String question;
-	private String response;
-	private String email;
+	private String userId;
+	private String disaster;
+	private String state;
 
 	public UserResponse(String question, String response, String email) {
-		this.setQuestion(question);
-		this.setResponse(response);
-		this.setEmail(email);
+
 	}
 
-	public String getEmail() {
-		return email;
+	public String getUserId() {
+		return userId;
 	}
 
-	public String getResponse() {
-		return response;
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 
-	public String getQuestion() {
-		return question;
+	public String getDisaster() {
+		return disaster;
 	}
 
-	public void setEmail(String email) {
-		this.email = email;
+	public void setDisaster(String disaster) {
+		this.disaster = disaster;
 	}
 
-	public void setResponse(String response) {
-		this.response = response;
+	public String getState() {
+		return state;
 	}
 
-	public void setQuestion(String question) {
-		this.question = question;
+	public void setState(String state) {
+		this.state = state;
 	}
+
 }

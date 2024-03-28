@@ -13,27 +13,6 @@ public class InitTablesHelper {
 	private static final String JDBC_URL = "jdbc:mysql://localhost:3306/edss";
 	private static final String USERNAME = "root";
 	private static final String PASSWORD = "1234";
-	private static Double baseDegreeChange = 0.09;
-
-	public void initUserResponsesDatabase() {
-		try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
-				Statement statement = connection.createStatement()) {
-
-			statement.executeUpdate("DROP TABLE IF EXISTS " + Constants.USERRESPONSES_TABLE);
-
-			String createTableQuery = "CREATE TABLE " + Constants.USERRESPONSES_TABLE + " ("
-					+ Constants.ID_AUTO_INCREMENT + Constants.TIMESTAMP_CURRENT + "USERNAME VARCHAR(255),"
-					+ "QUESTION VARCHAR(255)," + "RESPONSE VARCHAR(255)," + ")";
-
-			statement.executeUpdate(createTableQuery);
-
-			System.out.println(Constants.USERRESPONSES_TABLE + " table created successfully.");
-
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-
-	}
 
 	public static void initNotificationsDatabase() {
 		try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
@@ -92,9 +71,28 @@ public class InitTablesHelper {
 
 			statement.executeUpdate("DROP TABLE IF EXISTS " + Constants.USERS_TABLE);
 
-			String createTableQuery = "CREATE TABLE " + Constants.USERS_TABLE + " ( id VARCHAR(255),"
+			String createTableQuery = "CREATE TABLE " + Constants.USERS_TABLE + " ( USERID VARCHAR(255),"
 					+ "EMAIL VARCHAR(255)," + "LATITUDE DOUBLE," + "LONGITUDE DOUBLE," + "ENDPOINT VARCHAR(255),"
 					+ "P256 VARCHAR(255)," + "AUTH VARCHAR(255)" + ")";
+
+			statement.executeUpdate(createTableQuery);
+
+			System.out.println(Constants.USERS_TABLE + " table created successfully.");
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void initUserResponsesTable() {
+		try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+				Statement statement = connection.createStatement()) {
+
+			statement.executeUpdate("DROP TABLE IF EXISTS " + Constants.USERRESPONSES_TABLE);
+
+			String createTableQuery = "CREATE TABLE " + Constants.USERRESPONSES_TABLE + " ("
+					+ Constants.TIMESTAMP_CURRENT + "USERID VARCHAR(255)," + "DISASTER VARCHAR(255),"
+					+ "STATE VARCHAR(255)" + ")";
 
 			statement.executeUpdate(createTableQuery);
 
