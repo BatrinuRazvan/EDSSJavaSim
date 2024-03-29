@@ -18,14 +18,11 @@ import com.edss.models.UserResponse;
 
 public class DbHelper {
 
-	private static final String JDBC_URL = "jdbc:mysql://localhost:3306/edss";
-	private static final String USERNAME = "root";
-	private static final String PASSWORD = "1234";
 	private static Double baseDegreeChange = 0.09;
 
 	public static void addUserRespons(String email, String question, String response) {
-		try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
-				Statement statement = connection.createStatement()) {
+		try (Connection connection = DriverManager.getConnection(Constants.JDBC_URL, Constants.USERNAME,
+				Constants.PASSWORD); Statement statement = connection.createStatement()) {
 
 			String sqlStatement = "INSERT INTO " + Constants.USERRESPONSES_TABLE + " (" + email + ", " + question + ", "
 					+ response + ") VALUES (?, ?, ?)";
@@ -44,8 +41,8 @@ public class DbHelper {
 		String sqlStatement = "INSERT INTO " + Constants.NOTIFICATIONS_TABLE
 				+ " (city, title, color, severity, rangekm, description, degreechange) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-		try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
-				PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement)) {
+		try (Connection connection = DriverManager.getConnection(Constants.JDBC_URL, Constants.USERNAME,
+				Constants.PASSWORD); PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement)) {
 
 			preparedStatement.setString(1, city);
 			preparedStatement.setString(2, title);
@@ -63,8 +60,8 @@ public class DbHelper {
 	}
 
 	public static List<CityMarker> getCities() {
-		try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
-				Statement statement = connection.createStatement()) {
+		try (Connection connection = DriverManager.getConnection(Constants.JDBC_URL, Constants.USERNAME,
+				Constants.PASSWORD); Statement statement = connection.createStatement()) {
 
 			String createTableQuery = "SELECT * FROM " + Constants.MARKERS_TABLE;
 
@@ -84,8 +81,8 @@ public class DbHelper {
 	}
 
 	public static List<MessageNotification> getMessageNotifications() {
-		try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
-				Statement statement = connection.createStatement()) {
+		try (Connection connection = DriverManager.getConnection(Constants.JDBC_URL, Constants.USERNAME,
+				Constants.PASSWORD); Statement statement = connection.createStatement()) {
 
 			String createTableQuery = "SELECT * FROM " + Constants.NOTIFICATIONS_TABLE;
 
@@ -107,7 +104,8 @@ public class DbHelper {
 	}
 
 	public static List<MessageNotification> getLocalMessageNotifications(UserLocation userLocation) {
-		try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD)) {
+		try (Connection connection = DriverManager.getConnection(Constants.JDBC_URL, Constants.USERNAME,
+				Constants.PASSWORD)) {
 			double userLat = userLocation.getLatitude();
 			double userLon = userLocation.getLongitude();
 			List<MessageNotification> filteredMessages = new ArrayList<>();
@@ -158,15 +156,16 @@ public class DbHelper {
 	public static void saveUser(User newUser) {
 
 		String sqlStatement = "INSERT INTO " + Constants.USERS_TABLE
-				+ " (userid, email, latitude, longitude) VALUES (?, ?, ?, ?)";
+				+ " (userid, email, latitude, longitude, closestcity) VALUES (?, ?, ?, ?, ?)";
 
-		try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
-				PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement)) {
+		try (Connection connection = DriverManager.getConnection(Constants.JDBC_URL, Constants.USERNAME,
+				Constants.PASSWORD); PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement)) {
 
 			preparedStatement.setString(1, newUser.getUserId());
 			preparedStatement.setString(2, newUser.getEmail());
 			preparedStatement.setDouble(3, newUser.getCurrentLocation().getLatitude());
 			preparedStatement.setDouble(4, newUser.getCurrentLocation().getLongitude());
+			preparedStatement.setString(5, newUser.getClosestCity());
 
 			preparedStatement.executeUpdate();
 
@@ -176,8 +175,8 @@ public class DbHelper {
 	}
 
 	public static List<EdssSubscription> getAllUsers() {
-		try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
-				Statement statement = connection.createStatement()) {
+		try (Connection connection = DriverManager.getConnection(Constants.JDBC_URL, Constants.USERNAME,
+				Constants.PASSWORD); Statement statement = connection.createStatement()) {
 
 			String createTableQuery = "SELECT * FROM " + Constants.USERS_TABLE;
 
@@ -203,8 +202,8 @@ public class DbHelper {
 		String sqlStatement = "UPDATE " + Constants.USERS_TABLE
 				+ " SET endpoint = ?, p256 = ?, auth = ? WHERE userid = ?";
 
-		try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
-				PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement)) {
+		try (Connection connection = DriverManager.getConnection(Constants.JDBC_URL, Constants.USERNAME,
+				Constants.PASSWORD); PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement)) {
 
 			// Set the subscription details in the prepared statement
 			preparedStatement.setString(1, subscription.getEndpoint());
@@ -229,8 +228,8 @@ public class DbHelper {
 	}
 
 	public static List<EdssSubscription> getAllSubscriptions() {
-		try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
-				Statement statement = connection.createStatement()) {
+		try (Connection connection = DriverManager.getConnection(Constants.JDBC_URL, Constants.USERNAME,
+				Constants.PASSWORD); Statement statement = connection.createStatement()) {
 
 			String createTableQuery = "SELECT * FROM " + Constants.SUBSCRIPTION_TABLE;
 
@@ -250,7 +249,8 @@ public class DbHelper {
 	}
 
 	public static List<User> getUsersInArea(MessageNotification notification) {
-		try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD)) {
+		try (Connection connection = DriverManager.getConnection(Constants.JDBC_URL, Constants.USERNAME,
+				Constants.PASSWORD)) {
 			List<User> users = new ArrayList<>();
 
 			CityMarker cityMarker = null;
@@ -273,7 +273,7 @@ public class DbHelper {
 							UserLocation location = new UserLocation(resultUsers.getDouble(3),
 									resultUsers.getDouble(4));
 							EdssSubscription sub = new EdssSubscription(resultUsers.getString(1),
-									resultUsers.getString(5), resultUsers.getString(6), resultUsers.getString(7));
+									resultUsers.getString(6), resultUsers.getString(7), resultUsers.getString(8));
 							User user = new User(resultUsers.getString(1), resultUsers.getString(2), location);
 							user.setSubscription(sub);
 
@@ -304,8 +304,8 @@ public class DbHelper {
 		String sqlStatement = "INSERT INTO " + Constants.USERRESPONSES_TABLE
 				+ " (userid, disaster, state) VALUES (?, ?, ?)";
 
-		try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
-				PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement)) {
+		try (Connection connection = DriverManager.getConnection(Constants.JDBC_URL, Constants.USERNAME,
+				Constants.PASSWORD); PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement)) {
 
 			preparedStatement.setString(1, response.getUserId());
 			preparedStatement.setString(2, response.getDisaster());
@@ -316,6 +316,38 @@ public class DbHelper {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static String exctactClosestCity(double userLatitude, double userLongitude) {
+		try (Connection connection = DriverManager.getConnection(Constants.JDBC_URL, Constants.USERNAME,
+				Constants.PASSWORD); Statement statement = connection.createStatement()) {
+
+			String createTableQuery = "SELECT * FROM " + Constants.MARKERS_TABLE;
+
+			ResultSet result = statement.executeQuery(createTableQuery);
+			List<CityMarker> markers = new ArrayList<>();
+			while (result.next()) {
+				CityMarker marker = new CityMarker(result.getString(2), result.getDouble(3), result.getDouble(4));
+				markers.add(marker);
+			}
+			CityMarker closest = markers.get(0);
+			for (CityMarker marker : markers) {
+				double closestLat = Math.abs(closest.getLatitude());
+				double closestLon = Math.abs(closest.getLongitude());
+				double markerLat = Math.abs(marker.getLatitude());
+				double markerLon = Math.abs(marker.getLongitude());
+				if (Math.abs(userLatitude - markerLat) < Math.abs(userLatitude - closestLat)) {
+					if (Math.abs(userLongitude - markerLon) < Math.abs(userLongitude - closestLon)) {
+						closest = marker;
+					}
+				}
+			}
+			return closest.getCityName();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 }

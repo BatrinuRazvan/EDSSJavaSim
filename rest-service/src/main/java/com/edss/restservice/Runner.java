@@ -3,8 +3,10 @@ package com.edss.restservice;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
+@EnableScheduling
 public class Runner {
 
 	public static void main(String[] args) {
@@ -13,7 +15,9 @@ public class Runner {
 
 	@Bean
 	public NotificationService notificationService() {
-		return new NotificationService();
+		NotificationService notificationService = new NotificationService();
+		new DisasterDaemon(notificationService);
+		return notificationService;
 	}
 
 }

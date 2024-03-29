@@ -15,8 +15,8 @@ public class NotificationService {
 		Security.addProvider(new BouncyCastleProvider());
 	}
 
-	private final String publicKey = "BJo28K3NruwmTtCrPPnf-rjd_YXd0ukt5ATkke_gIYbwfBmcIVaTJ181jvEnBho2WdamjNaP2CuSRBhndJrnIaI";
-	private final String privateKey = "HPqF_drHZRgyi2jmaFInTUk4jFl8oD43_dSSjCYl2k4";
+	private final String publicKey = "BGAUGfksW8MR0puO1T-LQuzYRNjmfLrwG9-PStRYckwEU3zVI3P60QOfsY6MoF82zwgqQpHUiLXBlsW425fh6no";
+	private final String privateKey = "mY1Nz_eu7xT_Gt61bNSeD8xEnDjpBV0C5vjQT7NSNzc";
 
 	public void sendNotification(EdssSubscription subscription, String payload) throws Exception {
 		PushService pushService = new PushService(publicKey, privateKey);

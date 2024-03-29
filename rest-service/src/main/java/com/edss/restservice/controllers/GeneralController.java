@@ -49,4 +49,9 @@ public class GeneralController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Authentication failed.");
 		}
 	}
+
+	@PostMapping("/startDaemons")
+	public void startDaemons() {
+
+	}
 }

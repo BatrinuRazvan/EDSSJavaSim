@@ -72,8 +72,8 @@ public class InitTablesHelper {
 			statement.executeUpdate("DROP TABLE IF EXISTS " + Constants.USERS_TABLE);
 
 			String createTableQuery = "CREATE TABLE " + Constants.USERS_TABLE + " ( USERID VARCHAR(255),"
-					+ "EMAIL VARCHAR(255)," + "LATITUDE DOUBLE," + "LONGITUDE DOUBLE," + "ENDPOINT VARCHAR(255),"
-					+ "P256 VARCHAR(255)," + "AUTH VARCHAR(255)" + ")";
+					+ "EMAIL VARCHAR(255)," + "LATITUDE DOUBLE," + "LONGITUDE DOUBLE," + "CLOSESTCITY VARCHAR(255),"
+					+ "ENDPOINT VARCHAR(255)," + "P256 VARCHAR(255)," + "AUTH VARCHAR(255)" + ")";
 
 			statement.executeUpdate(createTableQuery);
 
@@ -96,7 +96,7 @@ public class InitTablesHelper {
 
 			statement.executeUpdate(createTableQuery);
 
-			System.out.println(Constants.USERS_TABLE + " table created successfully.");
+			System.out.println(Constants.USERRESPONSES_TABLE + " table created successfully.");
 
 		} catch (SQLException e) {
 			e.printStackTrace();
