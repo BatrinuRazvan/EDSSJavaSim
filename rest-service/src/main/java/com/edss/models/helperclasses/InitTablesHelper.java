@@ -91,12 +91,31 @@ public class InitTablesHelper {
 			statement.executeUpdate("DROP TABLE IF EXISTS " + Constants.USERRESPONSES_TABLE);
 
 			String createTableQuery = "CREATE TABLE " + Constants.USERRESPONSES_TABLE + " ("
-					+ Constants.TIMESTAMP_CURRENT + "USERID VARCHAR(255)," + "DISASTER VARCHAR(255),"
-					+ "STATE VARCHAR(255)" + ")";
+					+ Constants.TIMESTAMP_CURRENT + "USERID VARCHAR(255)," + "CITY VARCHAR(255),"
+					+ "DISASTER VARCHAR(255)," + "STATE VARCHAR(255)" + ")";
 
 			statement.executeUpdate(createTableQuery);
 
 			System.out.println(Constants.USERRESPONSES_TABLE + " table created successfully.");
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void initDecisionResponsesTable() {
+		try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+				Statement statement = connection.createStatement()) {
+
+			statement.executeUpdate("DROP TABLE IF EXISTS " + Constants.DECISIONRESPONSES_TABLE);
+
+			String createTableQuery = "CREATE TABLE " + Constants.DECISIONRESPONSES_TABLE + " ("
+					+ Constants.TIMESTAMP_CURRENT + "CITY VARCHAR(255)," + "DISASTER VARCHAR(255),"
+					+ "STATE VARCHAR(255)" + ")";
+
+			statement.executeUpdate(createTableQuery);
+
+			System.out.println(Constants.DECISIONRESPONSES_TABLE + " table created successfully.");
 
 		} catch (SQLException e) {
 			e.printStackTrace();

@@ -2,6 +2,8 @@ package com.edss.models;
 
 public class TimestampDatabase {
 
+	private String originalTimestamp;
+
 	private String day;
 	private String month;
 	private String year;
@@ -11,6 +13,7 @@ public class TimestampDatabase {
 	private String second;
 
 	public TimestampDatabase(String timestamp) {
+		this.originalTimestamp = timestamp;
 		this.day = timestamp.substring(9, 11);
 		this.month = timestamp.substring(5, 7);
 		this.year = timestamp.substring(0, 4);
@@ -65,6 +68,10 @@ public class TimestampDatabase {
 
 	public void setSecond(String second) {
 		this.second = second;
+	}
+
+	public String getOriginalTimestamp() {
+		return originalTimestamp;
 	}
 
 }

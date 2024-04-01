@@ -9,7 +9,7 @@ import com.edss.simulation.simulation.Simulation;
 @RestController
 public class SimulationController {
 
-	Simulation sim = new Simulation(9, 10000, 100);
+	Simulation sim = new Simulation(8, 10000, 100);
 
 	@PostMapping("/startSimulation")
 	public String startSimulation() {

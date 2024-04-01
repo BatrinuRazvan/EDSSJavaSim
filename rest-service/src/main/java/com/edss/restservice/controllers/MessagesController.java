@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.edss.models.DecisionResponse;
 import com.edss.models.EdssSubscription;
 import com.edss.models.MessageNotification;
 import com.edss.models.User;
 import com.edss.models.UserLocation;
-import com.edss.models.UserResponse;
 import com.edss.models.helperclasses.DbHelper;
 import com.edss.models.helperclasses.HelperMethods;
 import com.edss.restservice.NotificationService;
@@ -61,13 +61,9 @@ public class MessagesController {
 		return DbHelper.getLocalMessageNotifications(userLocation);
 	}
 
-	@PostMapping("/saveResponse")
-	public ResponseEntity<?> saveResponse(@RequestBody UserResponse userResponse) {
-		// Assuming you have a DataSource or JdbcTemplate configured
-
-//		DbHelper.addUserRespons(userResponse.getEmail(), userResponse.getQuestion(), userResponse.getResponse());
-
-		return ResponseEntity.ok().build();
+	@GetMapping("/getDecisionResponses")
+	public List<DecisionResponse> getDecisionResponses() {
+		return DbHelper.getDecisionResponses();
 	}
 
 }

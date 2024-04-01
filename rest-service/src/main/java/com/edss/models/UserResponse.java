@@ -3,10 +3,12 @@ package com.edss.models;
 import java.util.List;
 
 import com.edss.models.helperclasses.Constants;
+import com.edss.models.helperclasses.DbHelper;
 
 public class UserResponse {
 
 	private String userId;
+	private String city;
 	private String disaster;
 	private String state;
 	private TimestampDatabase timestamp;
@@ -16,10 +18,12 @@ public class UserResponse {
 		this.userId = userId;
 		this.responses = responses;
 		extractDisasterType();
+		this.city = extractCityFromUser();
 	}
 
-	public UserResponse(String userId, String disaster, String state, String timestamp) {
+	public UserResponse(String userId, String city, String disaster, String state, String timestamp) {
 		this.userId = userId;
+		this.city = city;
 		this.disaster = disaster;
 		this.state = state;
 		this.setTimestamp(new TimestampDatabase(timestamp));
@@ -57,6 +61,14 @@ public class UserResponse {
 		this.timestamp = timestamp;
 	}
 
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
 	private void extractDisasterType() {
 		checkForFlood();
 
@@ -82,6 +94,10 @@ public class UserResponse {
 				this.state = Constants.DISASTER_STATE_NONEXISTENT;
 			}
 		}
+	}
+
+	private String extractCityFromUser() {
+		return DbHelper.exctactClosestCity(userId);
 	}
 
 }

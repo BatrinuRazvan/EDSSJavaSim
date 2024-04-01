@@ -13,6 +13,7 @@ public class RunnerSim {
 //		DbHelper.initUsersTable();
 //		InitTablesHelper.initUsersTable();
 		InitTablesHelper.initUserResponsesTable();
+		InitTablesHelper.initDecisionResponsesTable();
 	}
 
 }

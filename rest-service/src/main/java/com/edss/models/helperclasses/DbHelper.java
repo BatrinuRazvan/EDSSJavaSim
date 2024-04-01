@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.edss.models.CityMarker;
+import com.edss.models.DecisionResponse;
 import com.edss.models.EdssSubscription;
 import com.edss.models.MessageNotification;
 import com.edss.models.User;
@@ -302,14 +303,15 @@ public class DbHelper {
 
 	public static void saveUserResponse(UserResponse response) {
 		String sqlStatement = "INSERT INTO " + Constants.USERRESPONSES_TABLE
-				+ " (userid, disaster, state) VALUES (?, ?, ?)";
+				+ " (userid, city, disaster, state) VALUES (?, ?, ?, ?)";
 
 		try (Connection connection = DriverManager.getConnection(Constants.JDBC_URL, Constants.USERNAME,
 				Constants.PASSWORD); PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement)) {
 
 			preparedStatement.setString(1, response.getUserId());
-			preparedStatement.setString(2, response.getDisaster());
-			preparedStatement.setString(3, response.getState());
+			preparedStatement.setString(2, response.getCity());
+			preparedStatement.setString(3, response.getDisaster());
+			preparedStatement.setString(4, response.getState());
 
 			preparedStatement.executeUpdate();
 
@@ -348,6 +350,66 @@ public class DbHelper {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	public static String exctactClosestCity(String userId) {
+		try (Connection connection = DriverManager.getConnection(Constants.JDBC_URL, Constants.USERNAME,
+				Constants.PASSWORD); Statement statement = connection.createStatement()) {
+
+			String createTableQuery = "SELECT * FROM " + Constants.USERS_TABLE + " WHERE USERID = '" + userId + "'";
+
+			ResultSet result = statement.executeQuery(createTableQuery);
+			User user = null;
+			while (result.next()) {
+				UserLocation location = new UserLocation(result.getDouble(3), result.getDouble(4));
+				user = new User(result.getString(1), result.getString(2), location);
+			}
+			return user.getClosestCity();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public static void updateDisasterResponseTable(String city, String disasterType, String disasterState) {
+		String sqlStatement = "INSERT INTO " + Constants.DECISIONRESPONSES_TABLE
+				+ " (city, disaster, state) VALUES (?, ?, ?)";
+
+		try (Connection connection = DriverManager.getConnection(Constants.JDBC_URL, Constants.USERNAME,
+				Constants.PASSWORD); PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement)) {
+
+			preparedStatement.setString(1, city);
+			preparedStatement.setString(2, disasterType);
+			preparedStatement.setString(3, disasterState);
+
+			preparedStatement.executeUpdate();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static List<DecisionResponse> getDecisionResponses() {
+		try (Connection connection = DriverManager.getConnection(Constants.JDBC_URL, Constants.USERNAME,
+				Constants.PASSWORD); Statement statement = connection.createStatement()) {
+
+			String createTableQuery = "SELECT * FROM " + Constants.DECISIONRESPONSES_TABLE;
+
+			ResultSet result = statement.executeQuery(createTableQuery);
+			List<DecisionResponse> responses = new ArrayList<>();
+			while (result.next()) {
+				DecisionResponse response = new DecisionResponse(result.getString(1), result.getString(2),
+						result.getString(3), result.getString(4));
+				responses.add(response);
+			}
+			return responses;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+
 	}
 
 }

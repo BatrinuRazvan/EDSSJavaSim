@@ -6,11 +6,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import com.edss.models.EdssSubscription;
 import com.edss.models.MessageNotification;
@@ -24,10 +22,10 @@ import com.edss.restservice.NotificationService;
 public class FloodDaemon implements Daemon {
 
 	NotificationService notificationservice;
-	List<UserResponse> floodResponsesOngoing;
-	List<UserResponse> floodResponsesPossible;
-	Map<String, List<String>> cityAndResponsesOngoing = new HashMap<>();
-	Map<String, List<String>> cityAndResponsesPossible = new HashMap<>();
+	List<UserResponse> floodResponsesOngoing = new ArrayList<UserResponse>();
+	List<UserResponse> floodResponsesPossible = new ArrayList<UserResponse>();
+	Map<String, Integer> cityAndResponsesOngoing = new HashMap<>();
+	Map<String, Integer> cityAndResponsesPossible = new HashMap<>();
 
 	public FloodDaemon(NotificationService notificationService) {
 		this.notificationservice = notificationService;
@@ -45,16 +43,17 @@ public class FloodDaemon implements Daemon {
 			List<UserResponse> responses = new ArrayList<>();
 			while (result.next()) {
 				UserResponse response = new UserResponse(result.getString(2), result.getString(3), result.getString(4),
-						result.getString(1));
+						result.getString(5), result.getString(1));
 				responses.add(response);
 			}
-
-			this.floodResponsesOngoing = responses.stream()
-					.filter(response -> response.getState().equals(Constants.DISASTER_STATE_ONGOING))
-					.collect(Collectors.toList());
-			this.floodResponsesPossible = responses.stream()
-					.filter(response -> response.getState().equals(Constants.DISASTER_STATE_POSSIBLE))
-					.collect(Collectors.toList());
+			for (UserResponse response : responses) {
+				if (response.getState().equals(Constants.DISASTER_STATE_ONGOING)) {
+					this.floodResponsesOngoing.add(response);
+				}
+				if (response.getState().equals(Constants.DISASTER_STATE_POSSIBLE)) {
+					this.floodResponsesPossible.add(response);
+				}
+			}
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -69,25 +68,12 @@ public class FloodDaemon implements Daemon {
 	@Override
 	public void checkForOngoing() {
 		floodResponsesOngoing.forEach(response -> {
-			try (Connection connection = DriverManager.getConnection(Constants.JDBC_URL, Constants.USERNAME,
-					Constants.PASSWORD); Statement statement = connection.createStatement()) {
-
-				String createTableQuery = "SELECT CLOSESTCITY FROM " + Constants.USERS_TABLE + " WHERE USERID = '"
-						+ response.getUserId() + "'";
-
-				ResultSet result = statement.executeQuery(createTableQuery);
-				while (result.next()) {
-					String city = result.getString(1);
-					if (!cityAndResponsesOngoing.containsKey(city)) {
-						cityAndResponsesOngoing.put(city, Arrays.asList(response.getTimestamp().getDay()));
-					} else {
-						Integer currentNumber = Integer.valueOf(cityAndResponsesOngoing.get(city).get(1));
-						cityAndResponsesOngoing.replace(city, currentNumber + 1);
-					}
-				}
-
-			} catch (SQLException e) {
-				e.printStackTrace();
+			String city = response.getCity();
+			if (!cityAndResponsesOngoing.containsKey(city)) {
+				cityAndResponsesOngoing.put(city, 1);
+			} else {
+				Integer currentNumber = cityAndResponsesOngoing.get(city);
+				cityAndResponsesOngoing.replace(city, currentNumber + 1);
 			}
 
 		});
@@ -96,25 +82,12 @@ public class FloodDaemon implements Daemon {
 	@Override
 	public void checkForPossible() {
 		floodResponsesPossible.forEach(response -> {
-			try (Connection connection = DriverManager.getConnection(Constants.JDBC_URL, Constants.USERNAME,
-					Constants.PASSWORD); Statement statement = connection.createStatement()) {
-
-				String createTableQuery = "SELECT CLOSESTCITY FROM " + Constants.USERS_TABLE + " WHERE USERID = '"
-						+ response.getUserId() + "'";
-
-				ResultSet result = statement.executeQuery(createTableQuery);
-				while (result.next()) {
-					String city = result.getString(1);
-					if (!cityAndResponsesPossible.containsKey(city)) {
-						cityAndResponsesPossible.put(city, 0);
-					} else {
-						Integer currentNumber = cityAndResponsesPossible.get(city);
-						cityAndResponsesPossible.replace(city, currentNumber + 1);
-					}
-				}
-
-			} catch (SQLException e) {
-				e.printStackTrace();
+			String city = response.getCity();
+			if (!cityAndResponsesPossible.containsKey(city)) {
+				cityAndResponsesPossible.put(city, 0);
+			} else {
+				Integer currentNumber = cityAndResponsesPossible.get(city);
+				cityAndResponsesPossible.replace(city, currentNumber + 1);
 			}
 
 		});
@@ -125,8 +98,9 @@ public class FloodDaemon implements Daemon {
 		cityAndResponsesOngoing.keySet().forEach(city -> {
 			if (cityAndResponsesOngoing.get(city) >= Constants.SEND_ONGOING_ALERT_THRESHOLD) {
 
-				MessageNotification notification = new MessageNotification(0, "FLOOD", city, "red", "fatal", 10,
-						"ALERT! Possible FLOOD in your area", 10.0 * 0.9);
+				MessageNotification notification = new MessageNotification(0, Constants.DISASTER_TYPE_FLOOD, city,
+						"red", "fatal", 10, "ALERT! Possible " + Constants.DISASTER_TYPE_FLOOD + " in your area",
+						10.0 * 0.9);
 				List<User> users = DbHelper.getUsersInArea(notification);
 
 				users.forEach(user -> {
@@ -139,15 +113,60 @@ public class FloodDaemon implements Daemon {
 						e.printStackTrace();
 					}
 				});
+
+				DbHelper.updateDisasterResponseTable(city, Constants.DISASTER_TYPE_FLOOD,
+						Constants.DISASTER_STATE_ONGOING);
+
+				floodResponsesOngoing.forEach(userResponse -> {
+					if (userResponse.getCity() == city) {
+						try (Connection connection = DriverManager.getConnection(Constants.JDBC_URL, Constants.USERNAME,
+								Constants.PASSWORD); Statement statement = connection.createStatement()) {
+
+							String createTableQuery = "DELETE FROM " + Constants.USERRESPONSES_TABLE
+									+ " WHERE USERID = '" + userResponse.getUserId() + "' and TIMESTAMP = '"
+									+ userResponse.getTimestamp().getOriginalTimestamp() + "'";
+
+							statement.execute(createTableQuery);
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
+
+					}
+				});
 			}
 		});
 		cityAndResponsesOngoing = new HashMap<String, Integer>();
+		floodResponsesOngoing = new ArrayList<UserResponse>();
 	}
 
 	@Override
 	public void sendPossibleAlert() {
-		// TODO Auto-generated method stub
+		cityAndResponsesPossible.keySet().forEach(city -> {
+			if (cityAndResponsesOngoing.get(city) >= Constants.SEND_POSSIBLE_ALERT_THRESHOLD) {
 
+				DbHelper.updateDisasterResponseTable(city, Constants.DISASTER_TYPE_FLOOD,
+						Constants.DISASTER_STATE_POSSIBLE);
+
+				floodResponsesPossible.forEach(userResponse -> {
+					if (userResponse.getCity() == city) {
+						try (Connection connection = DriverManager.getConnection(Constants.JDBC_URL, Constants.USERNAME,
+								Constants.PASSWORD); Statement statement = connection.createStatement()) {
+
+							String createTableQuery = "DELETE FROM " + Constants.USERRESPONSES_TABLE
+									+ " WHERE USERID = '" + userResponse.getUserId() + "' and TIMESTAMP = '"
+									+ userResponse.getTimestamp().getOriginalTimestamp() + "'";
+
+							statement.executeQuery(createTableQuery);
+						} catch (SQLException e) {
+							e.printStackTrace();
+						}
+
+					}
+				});
+			}
+		});
+		cityAndResponsesPossible = new HashMap<String, Integer>();
+		floodResponsesPossible = new ArrayList<UserResponse>();
 	}
 
 }
