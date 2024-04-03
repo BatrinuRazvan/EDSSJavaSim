@@ -2,8 +2,10 @@ package com.edss.models.helperclasses;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -120,6 +122,57 @@ public class InitTablesHelper {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public static void initExitPointsTable() {
+		try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+				Statement statement = connection.createStatement()) {
+
+			statement.executeUpdate("DROP TABLE IF EXISTS " + Constants.EXITPOINTS_TABLE);
+
+			String createTableQuery = "CREATE TABLE " + Constants.EXITPOINTS_TABLE + " (" + Constants.ID_AUTO_INCREMENT
+					+ "CITY VARCHAR(255)," + "LATITUDE DOUBLE," + "LONGITUDE DOUBLE" + ")";
+
+			statement.executeUpdate(createTableQuery);
+
+			System.out.println(Constants.EXITPOINTS_TABLE + " table created successfully.");
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		populateExitPointsTable();
+	}
+
+	private static void populateExitPointsTable() {
+		String sqlStatement = "INSERT INTO " + Constants.EXITPOINTS_TABLE + " (city, latitude, longitude) VALUES (?, ?, ?)";
+
+		Map<String, String> maplatlon = new HashMap<>();
+		maplatlon.put("45.707165", "21.187585");
+		maplatlon.put("45.763299", "21.178882");
+		maplatlon.put("45.778510", "21.210028");
+		maplatlon.put("45.787344", "21.217003");
+		maplatlon.put("45.785867", "21.236797");
+		maplatlon.put("45.769992", "21.270408");
+		maplatlon.put("45.729941", "21.266177");
+		maplatlon.put("45.706999", "21.233715");
+
+		maplatlon.keySet().forEach(lat -> {
+
+			try (Connection connection = DriverManager.getConnection(Constants.JDBC_URL, Constants.USERNAME,
+					Constants.PASSWORD);
+					PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement)) {
+
+				preparedStatement.setString(1, "Timisoara");
+				preparedStatement.setDouble(2, Double.valueOf(lat));
+				preparedStatement.setDouble(3, Double.valueOf(maplatlon.get(lat)));
+
+				preparedStatement.executeUpdate();
+
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+
+		});
 	}
 
 }

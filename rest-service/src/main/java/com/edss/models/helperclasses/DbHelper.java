@@ -412,4 +412,36 @@ public class DbHelper {
 
 	}
 
+	public static CityMarker getNearestCityExit(double userLatitude, double userLongitude) {
+		try (Connection connection = DriverManager.getConnection(Constants.JDBC_URL, Constants.USERNAME,
+				Constants.PASSWORD); Statement statement = connection.createStatement()) {
+
+			String createTableQuery = "SELECT * FROM " + Constants.EXITPOINTS_TABLE;
+
+			ResultSet result = statement.executeQuery(createTableQuery);
+			List<CityMarker> markers = new ArrayList<>();
+			while (result.next()) {
+				CityMarker marker = new CityMarker(result.getString(2), result.getDouble(3), result.getDouble(4));
+				markers.add(marker);
+			}
+			CityMarker closest = markers.get(0);
+			for (CityMarker marker : markers) {
+				double closestLat = Math.abs(closest.getLatitude());
+				double closestLon = Math.abs(closest.getLongitude());
+				double markerLat = Math.abs(marker.getLatitude());
+				double markerLon = Math.abs(marker.getLongitude());
+				if (Math.abs(userLatitude - markerLat) < Math.abs(userLatitude - closestLat)) {
+					if (Math.abs(userLongitude - markerLon) < Math.abs(userLongitude - closestLon)) {
+						closest = marker;
+					}
+				}
+			}
+			return closest;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 }

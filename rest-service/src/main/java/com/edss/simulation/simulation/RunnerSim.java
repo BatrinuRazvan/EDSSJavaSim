@@ -12,8 +12,9 @@ public class RunnerSim {
 //		DbHelper.initNotificationsDatabase();
 //		DbHelper.initUsersTable();
 //		InitTablesHelper.initUsersTable();
-		InitTablesHelper.initUserResponsesTable();
-		InitTablesHelper.initDecisionResponsesTable();
+//		InitTablesHelper.initUserResponsesTable();
+//		InitTablesHelper.initDecisionResponsesTable();
+		InitTablesHelper.initExitPointsTable();
 	}
 
 }

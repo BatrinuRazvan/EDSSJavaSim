@@ -17,6 +17,7 @@ public class Constants {
 	public static final String SUBSCRIPTION_TABLE = "SUBSCRIPTION";
 	public static final String USERRESPONSES_TABLE = "USERRESPONSES";
 	public static final String DECISIONRESPONSES_TABLE = "DECISIONRESPONSES";
+	public static final String EXITPOINTS_TABLE = "EXITPOINTS";
 
 	public static Map<String, List<Double>> cities = HelperMethods.initCities();
 
