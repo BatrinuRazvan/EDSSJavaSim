@@ -1,8 +1,13 @@
 package com.edss.restservice.controllers;
 
+import java.util.List;
+
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.edss.models.SimulationDayData;
+import com.edss.models.helperclasses.DbHelper;
 import com.edss.simulation.helperclasses.SimHelper;
 import com.edss.simulation.simulation.Simulation;
 
@@ -45,6 +50,11 @@ public class SimulationController {
 		SimHelper.resumeSimulation();
 
 		return "Simulation reset.";
+	}
+
+	@GetMapping("/getSimulationData")
+	public List<SimulationDayData> getDecisionResponses() {
+		return DbHelper.getSimulationData();
 	}
 
 }

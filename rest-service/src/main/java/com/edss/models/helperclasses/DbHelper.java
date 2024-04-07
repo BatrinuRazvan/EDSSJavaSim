@@ -13,6 +13,7 @@ import com.edss.models.CityMarker;
 import com.edss.models.DecisionResponse;
 import com.edss.models.EdssSubscription;
 import com.edss.models.MessageNotification;
+import com.edss.models.SimulationDayData;
 import com.edss.models.User;
 import com.edss.models.UserLocation;
 import com.edss.models.UserResponse;
@@ -437,6 +438,29 @@ public class DbHelper {
 				}
 			}
 			return closest;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public static List<SimulationDayData> getSimulationData() {
+		try (Connection connection = DriverManager.getConnection(Constants.JDBC_URL, Constants.USERNAME,
+				Constants.PASSWORD); Statement statement = connection.createStatement()) {
+
+			String createTableQuery = "SELECT * FROM " + Constants.SIMULATION_TABLE;
+
+			ResultSet result = statement.executeQuery(createTableQuery);
+			List<SimulationDayData> simDays = new ArrayList<>();
+			while (result.next()) {
+				SimulationDayData simDay = new SimulationDayData(result.getInt(1), result.getInt(3), result.getInt(4),
+						result.getInt(5), result.getInt(6), result.getInt(7), result.getInt(8), result.getInt(9),
+						result.getInt(10), result.getFloat(11), result.getInt(12), result.getInt(13), result.getInt(15),
+						result.getInt(16), result.getInt(17));
+				simDays.add(simDay);
+			}
+			return simDays;
 
 		} catch (SQLException e) {
 			e.printStackTrace();
