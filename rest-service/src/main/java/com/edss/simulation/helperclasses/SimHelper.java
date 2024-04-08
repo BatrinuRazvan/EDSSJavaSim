@@ -7,7 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
-import java.time.Month;
+import java.time.temporal.TemporalAdjusters;
 import java.util.Random;
 
 import com.edss.simulation.agents.Agent;
@@ -22,34 +22,29 @@ public class SimHelper {
 	private static boolean isPaused = false;
 
 	public static int initMonthsToDays(int simulationPeriodMonths) {
-
 		int result = 0;
 		LocalDate now = LocalDate.now();
-		Month month = now.getMonth();
-		int dayOfMonth = now.getDayOfMonth();
 
 		for (int iterate = 0; iterate < simulationPeriodMonths; iterate++) {
+			LocalDate future = now.plusMonths(iterate);
 			if (iterate == 0) {
-				result += month.maxLength() - dayOfMonth;
+				result += future.with(TemporalAdjusters.lastDayOfMonth()).getDayOfMonth() - now.getDayOfMonth();
 			} else if (iterate == simulationPeriodMonths - 1) {
-				result += dayOfMonth;
+				result += now.getDayOfMonth();
 			} else {
-				result += month.maxLength();
+				result += future.with(TemporalAdjusters.lastDayOfMonth()).getDayOfMonth();
 			}
-			month = Month.of(month.getValue() + 1);
 		}
 
 		return result;
 	}
 
-	public static Date initCurrentDate() {
-		// TODO Auto-generated method stub
-		return null;
+	public static LocalDate initCurrentDate() {
+		return LocalDate.now();
 	}
 
-	public static Date nextDay(Date todaysDate) {
-		// TODO Auto-generated method stub
-		return null;
+	public static LocalDate nextDay(LocalDate todaysDate) {
+		return todaysDate.plusDays(1);
 	}
 
 	public static boolean isOneOfAgentsSick(Agent agent1, Agent agent2) {
@@ -76,10 +71,10 @@ public class SimHelper {
 		CentralLocation.initCentralLocation();
 	}
 
-	public static void dailyStats(int dayIncrement, Date date, int susceptibleAgentsTotal, int sickAgentsTotal,
-			int recoveredAgentsTotal, int deadAgentsTotal, int sickAgentsDaily, int recoveredAgentsDaily,
-			int deadAgentsDaily, int normalBedOcc, int icuBedOcc, int totalHospitalizations, int dailyHospitalizations,
-			double maskUse) {
+	public static void dailyStats(int dayIncrement, LocalDate todaysDate, int susceptibleAgentsTotal,
+			int sickAgentsTotal, int recoveredAgentsTotal, int deadAgentsTotal, int sickAgentsDaily,
+			int recoveredAgentsDaily, int deadAgentsDaily, int normalBedOcc, int icuBedOcc, int totalHospitalizations,
+			int dailyHospitalizations, double maskUse) {
 
 		try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD)) {
 
@@ -87,7 +82,7 @@ public class SimHelper {
 
 			try (PreparedStatement preparedStatement = connection.prepareStatement(insertQuery)) {
 				preparedStatement.setInt(1, dayIncrement);
-				preparedStatement.setDate(2, Date.valueOf("2022-11-05"));
+				preparedStatement.setDate(2, Date.valueOf(todaysDate));
 				preparedStatement.setInt(3, deadAgentsTotal);
 				preparedStatement.setInt(4, deadAgentsDaily);
 				preparedStatement.setInt(5, sickAgentsTotal);

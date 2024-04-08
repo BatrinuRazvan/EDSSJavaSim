@@ -1,6 +1,6 @@
 package com.edss.simulation.simulation;
 
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -15,7 +15,7 @@ import com.edss.simulation.helperclasses.SimHelper;
 public class Simulation {
 
 	private int dayCounter;
-	private Date todaysDate;
+	private LocalDate todaysDate;
 	private int simulationPeriodDays;
 	private int numberOfAgents;
 	private int childrenCount;
@@ -230,7 +230,7 @@ public class Simulation {
 
 	}
 
-	public void setTodaysDate(Date todaysDate) {
+	public void setTodaysDate(LocalDate todaysDate) {
 		this.todaysDate = todaysDate;
 	}
 
