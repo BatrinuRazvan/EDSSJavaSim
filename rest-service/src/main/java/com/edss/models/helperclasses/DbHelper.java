@@ -158,7 +158,7 @@ public class DbHelper {
 	public static void saveUser(User newUser) {
 
 		String sqlStatement = "INSERT INTO " + Constants.USERS_TABLE
-				+ " (userid, email, latitude, longitude, closestcity) VALUES (?, ?, ?, ?, ?)";
+				+ " (userid, email, latitude, longitude, closestcity, usertype) VALUES (?, ?, ?, ?, ?, ?)";
 
 		try (Connection connection = DriverManager.getConnection(Constants.JDBC_URL, Constants.USERNAME,
 				Constants.PASSWORD); PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement)) {
@@ -168,6 +168,7 @@ public class DbHelper {
 			preparedStatement.setDouble(3, newUser.getCurrentLocation().getLatitude());
 			preparedStatement.setDouble(4, newUser.getCurrentLocation().getLongitude());
 			preparedStatement.setString(5, newUser.getClosestCity());
+			preparedStatement.setString(5, newUser.getUserType());
 
 			preparedStatement.executeUpdate();
 
@@ -186,7 +187,7 @@ public class DbHelper {
 			List<User> users = new ArrayList<>();
 			while (result.next()) {
 				User user = new User(result.getString(1), result.getString(2),
-						new UserLocation(result.getDouble(3), result.getDouble(4)));
+						new UserLocation(result.getDouble(3), result.getDouble(4)), result.getString(6));
 				users.add(user);
 			}
 			return null;
@@ -276,7 +277,8 @@ public class DbHelper {
 									resultUsers.getDouble(4));
 							EdssSubscription sub = new EdssSubscription(resultUsers.getString(1),
 									resultUsers.getString(6), resultUsers.getString(7), resultUsers.getString(8));
-							User user = new User(resultUsers.getString(1), resultUsers.getString(2), location);
+							User user = new User(resultUsers.getString(1), resultUsers.getString(2), location,
+									resultUsers.getString(6));
 							user.setSubscription(sub);
 
 							double degreeChange = notification.getRange() * baseDegreeChange;
@@ -363,7 +365,7 @@ public class DbHelper {
 			User user = null;
 			while (result.next()) {
 				UserLocation location = new UserLocation(result.getDouble(3), result.getDouble(4));
-				user = new User(result.getString(1), result.getString(2), location);
+				user = new User(result.getString(1), result.getString(2), location, result.getString(6));
 			}
 			return user.getClosestCity();
 

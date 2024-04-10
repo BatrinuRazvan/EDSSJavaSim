@@ -75,7 +75,8 @@ public class InitTablesHelper {
 
 			String createTableQuery = "CREATE TABLE " + Constants.USERS_TABLE + " ( USERID VARCHAR(255),"
 					+ "EMAIL VARCHAR(255)," + "LATITUDE DOUBLE," + "LONGITUDE DOUBLE," + "CLOSESTCITY VARCHAR(255),"
-					+ "ENDPOINT VARCHAR(255)," + "P256 VARCHAR(255)," + "AUTH VARCHAR(255)" + ")";
+					+ "USERTYPE VARCHAR(255)," + "ENDPOINT VARCHAR(255)," + "P256 VARCHAR(255)," + "AUTH VARCHAR(255)"
+					+ ")";
 
 			statement.executeUpdate(createTableQuery);
 
@@ -144,7 +145,8 @@ public class InitTablesHelper {
 	}
 
 	private static void populateExitPointsTable() {
-		String sqlStatement = "INSERT INTO " + Constants.EXITPOINTS_TABLE + " (city, latitude, longitude) VALUES (?, ?, ?)";
+		String sqlStatement = "INSERT INTO " + Constants.EXITPOINTS_TABLE
+				+ " (city, latitude, longitude) VALUES (?, ?, ?)";
 
 		Map<String, String> maplatlon = new HashMap<>();
 		maplatlon.put("45.707165", "21.187585");

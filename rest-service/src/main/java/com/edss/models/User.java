@@ -9,13 +9,15 @@ public class User {
 	private UserLocation currentLocation;
 	private EdssSubscription subscription;
 	private String closestCity;
+	private String userType;
 
-	public User(String userId, String email, UserLocation currentLocation) {
+	public User(String userId, String email, UserLocation currentLocation, String userType) {
 		this.userId = userId;
 		this.email = email;
 		this.currentLocation = currentLocation;
 		this.closestCity = DbHelper.exctactClosestCity(this.currentLocation.getLatitude(),
 				this.currentLocation.getLongitude());
+		this.userType = userType;
 	}
 
 	public String getUserId() {
@@ -56,6 +58,14 @@ public class User {
 
 	public void setClosestCity(String closestCity) {
 		this.closestCity = closestCity;
+	}
+
+	public String getUserType() {
+		return userType;
+	}
+
+	public void setUserType(String userType) {
+		this.userType = userType;
 	}
 
 }

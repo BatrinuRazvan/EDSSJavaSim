@@ -37,9 +37,9 @@ public class UserController {
 
 	@PostMapping("/saveUser")
 	public ResponseEntity<?> saveUser(@RequestParam String userId, @RequestParam String email,
-			@RequestParam double latitude, @RequestParam double longitude) {
+			@RequestParam double latitude, @RequestParam double longitude, @RequestParam String userType) {
 
-		User newUser = new User(userId, email, new UserLocation(latitude, longitude));
+		User newUser = new User(userId, email, new UserLocation(latitude, longitude), userType);
 		if (!HelperMethods.userAlreadyExists(newUser)) {
 			DbHelper.saveUser(newUser);
 		}
