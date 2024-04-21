@@ -88,4 +88,9 @@ public class UserController {
 		return DbHelper.getNearestCityExit(latitude, longitude);
 	}
 
+	@GetMapping("/getUserType")
+	public String getUserType(@RequestBody String userId) {
+		return DbHelper.getUserType(userId);
+	}
+
 }

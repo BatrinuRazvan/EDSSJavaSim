@@ -14,7 +14,9 @@ public class RunnerSim {
 //		InitTablesHelper.initUsersTable();
 //		InitTablesHelper.initUserResponsesTable();
 //		InitTablesHelper.initDecisionResponsesTable();
-		InitTablesHelper.initExitPointsTable();
+//		InitTablesHelper.initExitPointsTable();
+		InitTablesHelper.initDiagnosticsTable();
+		InitTablesHelper.initSymptomsTable();
 	}
 
 }

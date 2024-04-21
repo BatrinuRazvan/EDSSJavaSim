@@ -470,4 +470,91 @@ public class DbHelper {
 		return null;
 	}
 
+	public static List<String> getAllStoredDiagnostics() {
+		try (Connection connection = DriverManager.getConnection(Constants.JDBC_URL, Constants.USERNAME,
+				Constants.PASSWORD); Statement statement = connection.createStatement()) {
+
+			String createTableQuery = "SELECT * FROM " + Constants.DIAGNOSTICS_TABLE;
+
+			ResultSet result = statement.executeQuery(createTableQuery);
+			List<String> diagnostics = new ArrayList<>();
+			while (result.next()) {
+				String dia = result.getString(1);
+				diagnostics.add(dia);
+			}
+			return diagnostics;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public static void saveNewDiagnostic(String diagnostic) {
+		String sqlStatement = "INSERT INTO " + Constants.DIAGNOSTICS_TABLE + " (name, total) VALUES (?, ?)";
+
+		try (Connection connection = DriverManager.getConnection(Constants.JDBC_URL, Constants.USERNAME,
+				Constants.PASSWORD); PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement)) {
+
+			preparedStatement.setString(1, diagnostic);
+			preparedStatement.setInt(2, 1);
+
+			preparedStatement.executeUpdate();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void incrementDiagnosticNumber(String diagnostic, int numberOfDiagnostics) {
+		try (Connection connection = DriverManager.getConnection(Constants.JDBC_URL, Constants.USERNAME,
+				Constants.PASSWORD); Statement statement = connection.createStatement()) {
+
+			String createTableQuery = "UPDATE " + Constants.DIAGNOSTICS_TABLE + " SET TOTAL = TOTAL + "
+					+ String.valueOf(numberOfDiagnostics) + " WHERE NAME = '" + diagnostic + "'";
+
+			statement.executeQuery(createTableQuery).getInt(2);
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public static String getUserType(String userId) {
+		try (Connection connection = DriverManager.getConnection(Constants.JDBC_URL, Constants.USERNAME,
+				Constants.PASSWORD); Statement statement = connection.createStatement()) {
+
+			String createTableQuery = "SELECT USERTYPE FROM " + Constants.USERS_TABLE + " WHERE USERID = '" + userId
+					+ "'";
+
+			return statement.executeQuery(createTableQuery).getString(1);
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public static List<String> getAllStoredSymptoms(String diagnosticName) {
+		try (Connection connection = DriverManager.getConnection(Constants.JDBC_URL, Constants.USERNAME,
+				Constants.PASSWORD); Statement statement = connection.createStatement()) {
+
+			String createTableQuery = "SELECT * FROM " + Constants.SYMPTOMS_TABLE + " WHERE DIAGNOSTICNAME = '"
+					+ diagnosticName + "'";
+
+			ResultSet result = statement.executeQuery(createTableQuery);
+			List<String> symptoms = new ArrayList<>();
+			while (result.next()) {
+				String symptom = result.getString(2);
+				symptoms.add(symptom);
+			}
+			return symptoms;
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 }

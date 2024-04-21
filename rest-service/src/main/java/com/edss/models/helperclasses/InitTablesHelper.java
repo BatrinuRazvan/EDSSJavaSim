@@ -177,4 +177,40 @@ public class InitTablesHelper {
 		});
 	}
 
+	public static void initDiagnosticsTable() {
+		try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+				Statement statement = connection.createStatement()) {
+
+			statement.executeUpdate("DROP TABLE IF EXISTS " + Constants.DIAGNOSTICS_TABLE);
+
+			String createTableQuery = "CREATE TABLE " + Constants.DIAGNOSTICS_TABLE + " (" + Constants.ID_AUTO_INCREMENT
+					+ "NAME VARCHAR(255)," + "TOTAL INT" + ")";
+
+			statement.executeUpdate(createTableQuery);
+
+			System.out.println(Constants.DIAGNOSTICS_TABLE + " table created successfully.");
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void initSymptomsTable() {
+		try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+				Statement statement = connection.createStatement()) {
+
+			statement.executeUpdate("DROP TABLE IF EXISTS " + Constants.SYMPTOMS_TABLE);
+
+			String createTableQuery = "CREATE TABLE " + Constants.SYMPTOMS_TABLE + " (" + "DIAGNOSTICNAME VARCHAR(255),"
+					+ "SYMPTOM VARCHAR(255)" + ")";
+
+			statement.executeUpdate(createTableQuery);
+
+			System.out.println(Constants.SYMPTOMS_TABLE + " table created successfully.");
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
 }

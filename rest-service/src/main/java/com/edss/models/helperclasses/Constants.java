@@ -19,6 +19,8 @@ public class Constants {
 	public static final String DECISIONRESPONSES_TABLE = "DECISIONRESPONSES";
 	public static final String EXITPOINTS_TABLE = "EXITPOINTS";
 	public static final String SIMULATION_TABLE = "SIMULATION";
+	public static final String DIAGNOSTICS_TABLE = "DIAGNOSTICS";
+	public static final String SYMPTOMS_TABLE = "SYMPTOMS";
 
 	public static Map<String, List<Double>> cities = HelperMethods.initCities();
 
