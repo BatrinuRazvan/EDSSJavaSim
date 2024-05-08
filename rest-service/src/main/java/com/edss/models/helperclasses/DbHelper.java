@@ -557,4 +557,25 @@ public class DbHelper {
 		return null;
 	}
 
+	public static void saveNewSymptoms(String diagnostic, List<String> symptoms) {
+		symptoms.forEach(symptom -> {
+			String sqlStatement = "INSERT INTO " + Constants.SYMPTOMS_TABLE
+					+ " (DIAGNOSTICNAME, SYMPTOM) VALUES (?, ?)";
+
+			try (Connection connection = DriverManager.getConnection(Constants.JDBC_URL, Constants.USERNAME,
+					Constants.PASSWORD);
+					PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement)) {
+
+				preparedStatement.setString(1, diagnostic);
+				preparedStatement.setString(2, symptom);
+
+				preparedStatement.executeUpdate();
+
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+
+		});
+	}
+
 }

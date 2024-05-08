@@ -28,7 +28,7 @@ public class QuestionsController {
 		return ResponseEntity.ok().build();
 	}
 
-	@PostMapping("/incrementDiagnosticNumber")
+	@PostMapping("/incrementDiagnosticNumberByUser")
 	public ResponseEntity<?> incrementDiagnosticNumberByUser(@RequestBody String diagnostic) {
 
 		DbHelper.incrementDiagnosticNumber(diagnostic, 1);
@@ -36,7 +36,7 @@ public class QuestionsController {
 		return ResponseEntity.ok().build();
 	}
 
-	@PostMapping("/incrementDiagnosticNumber")
+	@PostMapping("/incrementDiagnosticNumberByMedic")
 	public ResponseEntity<?> incrementDiagnosticNumberByMedic(@RequestBody String diagnostic,
 			@RequestBody int numberOfDiagnostics) {
 

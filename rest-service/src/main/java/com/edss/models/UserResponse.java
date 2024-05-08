@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.edss.models.helperclasses.Constants;
 import com.edss.models.helperclasses.DbHelper;
+import com.edss.models.helperclasses.DisasterType;
 
 public class UserResponse {
 
@@ -70,26 +71,20 @@ public class UserResponse {
 	}
 
 	private void extractDisasterType() {
-		checkForFlood();
-
-	}
-
-	private void checkForFlood() {
 		Response firstResponse = responses.get(0);
 		String firstQuestion = firstResponse.getQuestion();
 		String firstUserResponse = firstResponse.getResponse();
+		DisasterType disasterType = DisasterType.extractType(firstQuestion);
+		checkForState(disasterType, firstUserResponse);
+	}
 
-		if (firstQuestion.equals(Constants.FLOOD_PRESENT_QUESTION)) {
-			this.disaster = Constants.DISASTER_TYPE_FLOOD;
-
-			if (firstUserResponse.equals(Constants.RESPONSE_YES)) {
-				String isFloodOngoingResponse = responses.get(1).getResponse();
-				if (isFloodOngoingResponse.equals(Constants.RESPONSE_YES)) {
-					this.state = Constants.DISASTER_STATE_ONGOING;
-				} else {
-					this.state = Constants.DISASTER_STATE_POSSIBLE;
-				}
-
+	private void checkForState(DisasterType disasterType, String firstUserResponse) {
+		if (firstUserResponse.equals(Constants.RESPONSE_YES)) {
+			this.state = Constants.DISASTER_STATE_ONGOING;
+		} else {
+			String isDisasterIncomingResponse = responses.get(1).getResponse();
+			if (isDisasterIncomingResponse.equals(Constants.RESPONSE_YES)) {
+				this.state = Constants.DISASTER_STATE_POSSIBLE;
 			} else {
 				this.state = Constants.DISASTER_STATE_NONEXISTENT;
 			}

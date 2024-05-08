@@ -16,6 +16,7 @@ import com.edss.models.User;
 import com.edss.models.UserResponse;
 import com.edss.models.helperclasses.Constants;
 import com.edss.models.helperclasses.DbHelper;
+import com.edss.models.helperclasses.DisasterType;
 import com.edss.models.helperclasses.HelperMethods;
 import com.edss.restservice.NotificationService;
 
@@ -37,7 +38,7 @@ public class FloodDaemon implements Daemon {
 				Constants.PASSWORD); Statement statement = connection.createStatement()) {
 
 			String createTableQuery = "SELECT * FROM " + Constants.USERRESPONSES_TABLE + " WHERE DISASTER = '"
-					+ Constants.DISASTER_TYPE_FLOOD + "'";
+					+ DisasterType.FLOOD.name() + "'";
 
 			ResultSet result = statement.executeQuery(createTableQuery);
 			List<UserResponse> responses = new ArrayList<>();
@@ -98,9 +99,8 @@ public class FloodDaemon implements Daemon {
 		cityAndResponsesOngoing.keySet().forEach(city -> {
 			if (cityAndResponsesOngoing.get(city) >= Constants.SEND_ONGOING_ALERT_THRESHOLD) {
 
-				MessageNotification notification = new MessageNotification(0, Constants.DISASTER_TYPE_FLOOD, city,
-						"red", "fatal", 10, "ALERT! Possible " + Constants.DISASTER_TYPE_FLOOD + " in your area",
-						10.0 * 0.9);
+				MessageNotification notification = new MessageNotification(0, DisasterType.FLOOD.name(), city, "red",
+						"fatal", 10, "ALERT! Possible " + DisasterType.FLOOD.name() + " in your area", 10.0 * 0.9);
 				List<User> users = DbHelper.getUsersInArea(notification);
 
 				users.forEach(user -> {
@@ -114,8 +114,7 @@ public class FloodDaemon implements Daemon {
 					}
 				});
 
-				DbHelper.updateDisasterResponseTable(city, Constants.DISASTER_TYPE_FLOOD,
-						Constants.DISASTER_STATE_ONGOING);
+				DbHelper.updateDisasterResponseTable(city, DisasterType.FLOOD.name(), Constants.DISASTER_STATE_ONGOING);
 
 				floodResponsesOngoing.forEach(userResponse -> {
 					if (userResponse.getCity() == city) {
@@ -144,7 +143,7 @@ public class FloodDaemon implements Daemon {
 		cityAndResponsesPossible.keySet().forEach(city -> {
 			if (cityAndResponsesOngoing.get(city) >= Constants.SEND_POSSIBLE_ALERT_THRESHOLD) {
 
-				DbHelper.updateDisasterResponseTable(city, Constants.DISASTER_TYPE_FLOOD,
+				DbHelper.updateDisasterResponseTable(city, DisasterType.FLOOD.name(),
 						Constants.DISASTER_STATE_POSSIBLE);
 
 				floodResponsesPossible.forEach(userResponse -> {

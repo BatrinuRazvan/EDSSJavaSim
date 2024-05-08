@@ -24,13 +24,8 @@ public class Constants {
 
 	public static Map<String, List<Double>> cities = HelperMethods.initCities();
 
-	public static final String FLOOD_PRESENT_QUESTION = "Is there any flood danger?";
-	public static final String FLOOD_ONGOING_QUESTION = "Is the flood ongoing?";
-
 	public static final String RESPONSE_YES = "Yes";
 	public static final String RESPONSE_NO = "No";
-
-	public static final String DISASTER_TYPE_FLOOD = "FLOOD";
 
 	public static final String DISASTER_STATE_POSSIBLE = "POSSIBLE";
 	public static final String DISASTER_STATE_ONGOING = "ONGOING";
