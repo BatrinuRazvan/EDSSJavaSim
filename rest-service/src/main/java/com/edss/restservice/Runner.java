@@ -16,7 +16,7 @@ public class Runner {
 	@Bean
 	public NotificationService notificationService() {
 		NotificationService notificationService = new NotificationService();
-		new DisasterDaemon(notificationService);
+		new DisasterDaemonInitializer(notificationService);
 		return notificationService;
 	}
 

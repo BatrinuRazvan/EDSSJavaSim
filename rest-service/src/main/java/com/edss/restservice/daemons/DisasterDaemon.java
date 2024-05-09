@@ -20,25 +20,26 @@ import com.edss.models.helperclasses.DisasterType;
 import com.edss.models.helperclasses.HelperMethods;
 import com.edss.restservice.NotificationService;
 
-public class FloodDaemon implements Daemon {
+public class DisasterDaemon {
 
-	NotificationService notificationservice;
-	List<UserResponse> floodResponsesOngoing = new ArrayList<UserResponse>();
-	List<UserResponse> floodResponsesPossible = new ArrayList<UserResponse>();
-	Map<String, Integer> cityAndResponsesOngoing = new HashMap<>();
-	Map<String, Integer> cityAndResponsesPossible = new HashMap<>();
+	private NotificationService notificationservice;
+	private List<UserResponse> floodResponsesOngoing = new ArrayList<UserResponse>();
+	private List<UserResponse> floodResponsesPossible = new ArrayList<UserResponse>();
+	private Map<String, Integer> cityAndResponsesOngoing = new HashMap<>();
+	private Map<String, Integer> cityAndResponsesPossible = new HashMap<>();
+	private DisasterType disasterType;
 
-	public FloodDaemon(NotificationService notificationService) {
+	public DisasterDaemon(NotificationService notificationService, DisasterType disasterType) {
 		this.notificationservice = notificationService;
+		this.disasterType = disasterType;
 	}
 
-	@Override
 	public void runDaemon() {
 		try (Connection connection = DriverManager.getConnection(Constants.JDBC_URL, Constants.USERNAME,
 				Constants.PASSWORD); Statement statement = connection.createStatement()) {
 
 			String createTableQuery = "SELECT * FROM " + Constants.USERRESPONSES_TABLE + " WHERE DISASTER = '"
-					+ DisasterType.FLOOD.name() + "'";
+					+ disasterType.name() + "'";
 
 			ResultSet result = statement.executeQuery(createTableQuery);
 			List<UserResponse> responses = new ArrayList<>();
@@ -66,7 +67,6 @@ public class FloodDaemon implements Daemon {
 		sendPossibleAlert();
 	}
 
-	@Override
 	public void checkForOngoing() {
 		floodResponsesOngoing.forEach(response -> {
 			String city = response.getCity();
@@ -80,7 +80,6 @@ public class FloodDaemon implements Daemon {
 		});
 	}
 
-	@Override
 	public void checkForPossible() {
 		floodResponsesPossible.forEach(response -> {
 			String city = response.getCity();
@@ -94,13 +93,12 @@ public class FloodDaemon implements Daemon {
 		});
 	}
 
-	@Override
 	public void sendOngoingAlert() {
 		cityAndResponsesOngoing.keySet().forEach(city -> {
 			if (cityAndResponsesOngoing.get(city) >= Constants.SEND_ONGOING_ALERT_THRESHOLD) {
 
-				MessageNotification notification = new MessageNotification(0, DisasterType.FLOOD.name(), city, "red",
-						"fatal", 10, "ALERT! Possible " + DisasterType.FLOOD.name() + " in your area", 10.0 * 0.9);
+				MessageNotification notification = new MessageNotification(0, disasterType.name(), city, "red", "fatal",
+						10, "ALERT! Possible " + disasterType.name() + " in your area", 10.0 * 0.9);
 				List<User> users = DbHelper.getUsersInArea(notification);
 
 				users.forEach(user -> {
@@ -114,7 +112,7 @@ public class FloodDaemon implements Daemon {
 					}
 				});
 
-				DbHelper.updateDisasterResponseTable(city, DisasterType.FLOOD.name(), Constants.DISASTER_STATE_ONGOING);
+				DbHelper.updateDisasterResponseTable(city, disasterType.name(), Constants.DISASTER_STATE_ONGOING);
 
 				floodResponsesOngoing.forEach(userResponse -> {
 					if (userResponse.getCity() == city) {
@@ -138,13 +136,11 @@ public class FloodDaemon implements Daemon {
 		floodResponsesOngoing = new ArrayList<UserResponse>();
 	}
 
-	@Override
 	public void sendPossibleAlert() {
 		cityAndResponsesPossible.keySet().forEach(city -> {
 			if (cityAndResponsesOngoing.get(city) >= Constants.SEND_POSSIBLE_ALERT_THRESHOLD) {
 
-				DbHelper.updateDisasterResponseTable(city, DisasterType.FLOOD.name(),
-						Constants.DISASTER_STATE_POSSIBLE);
+				DbHelper.updateDisasterResponseTable(city, disasterType.name(), Constants.DISASTER_STATE_POSSIBLE);
 
 				floodResponsesPossible.forEach(userResponse -> {
 					if (userResponse.getCity() == city) {
