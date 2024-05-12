@@ -46,4 +46,8 @@ public class HelperMethods {
 		// Return the stringified version of the JSON object
 		return payloadJson.toString();
 	}
+
+	public static List<String> parseSymptoms(String symptoms) {
+		return List.of(symptoms.split(","));
+	}
 }

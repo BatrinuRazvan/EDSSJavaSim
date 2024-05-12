@@ -190,6 +190,8 @@ public class InitTablesHelper {
 
 			System.out.println(Constants.DIAGNOSTICS_TABLE + " table created successfully.");
 
+//			initOtherOption(Constants.DIAGNOSTICS_TABLE, connection, statement);
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -213,4 +215,15 @@ public class InitTablesHelper {
 		}
 	}
 
+//	private static void initOtherOption(String table, Connection connection, Statement statement) throws SQLException {
+//		String sqlStatement = "INSERT INTO " + table + " (name, total) VALUES (?, ?)";
+//
+//		PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement);
+//
+//		preparedStatement.setString(1, "OTHER");
+//		preparedStatement.setDouble(2, 0);
+//
+//		preparedStatement.executeUpdate();
+//
+//	}
 }

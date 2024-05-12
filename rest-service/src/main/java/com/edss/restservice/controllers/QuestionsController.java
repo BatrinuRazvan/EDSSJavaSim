@@ -7,9 +7,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.edss.models.helperclasses.DbHelper;
+import com.edss.models.helperclasses.HelperMethods;
 
 @RestController
 @RequestMapping("/questions")
@@ -20,10 +22,10 @@ public class QuestionsController {
 		return DbHelper.getAllStoredDiagnostics();
 	}
 
-	@PostMapping("/saveNewDiagnostic")
-	public ResponseEntity<?> saveNewDiagnostic(@RequestBody String diagnostic) {
+	@PostMapping("/saveDiagnostic")
+	public ResponseEntity<?> saveDiagnostic(@RequestBody String diagnostic) {
 
-		DbHelper.saveNewDiagnostic(diagnostic);
+		DbHelper.saveDiagnostic(diagnostic);
 
 		return ResponseEntity.ok().build();
 	}
@@ -46,8 +48,16 @@ public class QuestionsController {
 	}
 
 	@GetMapping("/getAllStoredSymptoms")
-	public List<String> getAllStoredSymptoms(@RequestBody String diagnosticName) {
-		return DbHelper.getAllStoredSymptoms(diagnosticName);
+	public List<String> getAllStoredSymptoms(@RequestParam String diagnostic) {
+		return DbHelper.getAllStoredSymptoms(diagnostic);
+	}
+
+	@PostMapping("/saveSymptoms")
+	public ResponseEntity<?> saveSymptoms(@RequestParam String diagnostic, @RequestParam String symptoms) {
+
+		DbHelper.saveSymptoms(diagnostic, HelperMethods.parseSymptoms(symptoms));
+
+		return ResponseEntity.ok().build();
 	}
 
 }

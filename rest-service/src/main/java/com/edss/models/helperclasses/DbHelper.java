@@ -168,7 +168,7 @@ public class DbHelper {
 			preparedStatement.setDouble(3, newUser.getCurrentLocation().getLatitude());
 			preparedStatement.setDouble(4, newUser.getCurrentLocation().getLongitude());
 			preparedStatement.setString(5, newUser.getClosestCity());
-			preparedStatement.setString(5, newUser.getUserType());
+			preparedStatement.setString(6, newUser.getUserType());
 
 			preparedStatement.executeUpdate();
 
@@ -479,7 +479,7 @@ public class DbHelper {
 			ResultSet result = statement.executeQuery(createTableQuery);
 			List<String> diagnostics = new ArrayList<>();
 			while (result.next()) {
-				String dia = result.getString(1);
+				String dia = result.getString(2);
 				diagnostics.add(dia);
 			}
 			return diagnostics;
@@ -490,7 +490,7 @@ public class DbHelper {
 		return null;
 	}
 
-	public static void saveNewDiagnostic(String diagnostic) {
+	public static void saveDiagnostic(String diagnostic) {
 		String sqlStatement = "INSERT INTO " + Constants.DIAGNOSTICS_TABLE + " (name, total) VALUES (?, ?)";
 
 		try (Connection connection = DriverManager.getConnection(Constants.JDBC_URL, Constants.USERNAME,
@@ -513,7 +513,7 @@ public class DbHelper {
 			String createTableQuery = "UPDATE " + Constants.DIAGNOSTICS_TABLE + " SET TOTAL = TOTAL + "
 					+ String.valueOf(numberOfDiagnostics) + " WHERE NAME = '" + diagnostic + "'";
 
-			statement.executeQuery(createTableQuery).getInt(2);
+			statement.executeUpdate(createTableQuery);
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -528,7 +528,9 @@ public class DbHelper {
 			String createTableQuery = "SELECT USERTYPE FROM " + Constants.USERS_TABLE + " WHERE USERID = '" + userId
 					+ "'";
 
-			return statement.executeQuery(createTableQuery).getString(1);
+			ResultSet result = statement.executeQuery(createTableQuery);
+			result.next();
+			return result.getString(1);
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -557,7 +559,7 @@ public class DbHelper {
 		return null;
 	}
 
-	public static void saveNewSymptoms(String diagnostic, List<String> symptoms) {
+	public static void saveSymptoms(String diagnostic, List<String> symptoms) {
 		symptoms.forEach(symptom -> {
 			String sqlStatement = "INSERT INTO " + Constants.SYMPTOMS_TABLE
 					+ " (DIAGNOSTICNAME, SYMPTOM) VALUES (?, ?)";

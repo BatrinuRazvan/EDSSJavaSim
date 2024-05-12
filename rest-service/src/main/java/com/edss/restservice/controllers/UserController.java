@@ -89,7 +89,7 @@ public class UserController {
 	}
 
 	@GetMapping("/getUserType")
-	public String getUserType(@RequestBody String userId) {
+	public String getUserType(@RequestParam String userId) {
 		return DbHelper.getUserType(userId);
 	}
 
