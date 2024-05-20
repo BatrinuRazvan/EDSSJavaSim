@@ -10,6 +10,7 @@ public class Constants {
 	public static final String PASSWORD = "1234";
 
 	public static final String ID_AUTO_INCREMENT = "id INT AUTO_INCREMENT PRIMARY KEY,";
+	public static final String ID_DAY_INCREMENT = "DAY_INCREMENT INT AUTO_INCREMENT PRIMARY KEY,";
 	public static final String TIMESTAMP_CURRENT = "TIMESTAMP DATETIME DEFAULT CURRENT_TIMESTAMP,";
 	public static final String MARKERS_TABLE = "MARKERS";
 	public static final String NOTIFICATIONS_TABLE = "NOTIFICATIONS";
@@ -21,6 +22,7 @@ public class Constants {
 	public static final String SIMULATION_TABLE = "SIMULATION";
 	public static final String DIAGNOSTICS_TABLE = "DIAGNOSTICS";
 	public static final String SYMPTOMS_TABLE = "SYMPTOMS";
+	public static final String COVID19_TM_TABLE = "COVID19_TM";
 
 	public static Map<String, List<Double>> cities = HelperMethods.initCities();
 

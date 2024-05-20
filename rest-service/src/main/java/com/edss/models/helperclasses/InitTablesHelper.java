@@ -184,7 +184,7 @@ public class InitTablesHelper {
 			statement.executeUpdate("DROP TABLE IF EXISTS " + Constants.DIAGNOSTICS_TABLE);
 
 			String createTableQuery = "CREATE TABLE " + Constants.DIAGNOSTICS_TABLE + " (" + Constants.ID_AUTO_INCREMENT
-					+ "NAME VARCHAR(255)," + "TOTAL INT" + ")";
+					+ Constants.TIMESTAMP_CURRENT + "NAME VARCHAR(255)," + "TOTAL INT" + ")";
 
 			statement.executeUpdate(createTableQuery);
 
@@ -215,15 +215,22 @@ public class InitTablesHelper {
 		}
 	}
 
-//	private static void initOtherOption(String table, Connection connection, Statement statement) throws SQLException {
-//		String sqlStatement = "INSERT INTO " + table + " (name, total) VALUES (?, ?)";
-//
-//		PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement);
-//
-//		preparedStatement.setString(1, "OTHER");
-//		preparedStatement.setDouble(2, 0);
-//
-//		preparedStatement.executeUpdate();
-//
-//	}
+	public static void initCovidTimisoaraDatabase() {
+		try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+				Statement statement = connection.createStatement()) {
+
+			statement.executeUpdate("DROP TABLE IF EXISTS " + Constants.COVID19_TM_TABLE);
+
+			String createTableQuery = "CREATE TABLE " + Constants.COVID19_TM_TABLE + " (" + Constants.ID_DAY_INCREMENT
+					+ "DATE_ID DATE," + "CAZURI INT," + "DECESE INT" + ")";
+
+			statement.executeUpdate(createTableQuery);
+
+			System.out.println(Constants.COVID19_TM_TABLE + " table created successfully.");
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+	}
 }

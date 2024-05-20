@@ -48,7 +48,6 @@ public class SimHelper {
 	}
 
 	public static boolean isOneOfAgentsSick(Agent agent1, Agent agent2) {
-//		check to see if one of the agents is sick, otherwise there is no point
 		if (agent1.isSick() && !agent2.isSick()) {
 			return true;
 		}
