@@ -29,8 +29,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class UserController {
 
 	@PostMapping("/updateLocation")
-	public ResponseEntity<?> updateLocation(@RequestParam String userId, @RequestParam double latitude,
-			@RequestParam double longitude) {
+	public ResponseEntity<?> updateLocation(@RequestParam String userId, @RequestParam String latitude,
+			@RequestParam String longitude) {
+
+		DbHelper.updateLocation(userId, Double.valueOf(latitude), Double.valueOf(longitude));
 
 		return ResponseEntity.ok().build();
 	}

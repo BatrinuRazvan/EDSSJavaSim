@@ -580,4 +580,20 @@ public class DbHelper {
 		});
 	}
 
+	public static void updateLocation(String userId, Double latitude, Double longitude) {
+		String query = "UPDATE " + Constants.USERS_TABLE + " SET LATITUDE=?, LONGITUDE=? WHERE USERID=?";
+		try (Connection connection = DriverManager.getConnection(Constants.JDBC_URL, Constants.USERNAME,
+				Constants.PASSWORD); PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+			preparedStatement.setDouble(1, latitude);
+			preparedStatement.setDouble(2, longitude);
+			preparedStatement.setString(3, userId);
+
+			preparedStatement.executeUpdate();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
 }
