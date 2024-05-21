@@ -1,5 +1,7 @@
 package com.edss.simulation.helperclasses;
 
+import com.edss.models.ModifyableParameters;
+
 public class SimConstants {
 
 	public static final String NAME_OF_DISEASE = "EPIDEMIC";
@@ -30,6 +32,10 @@ public class SimConstants {
 
 	public static final String CHANCE_TO_AGGRAVATE = "CHANCE_TO_AGGRAVATE";
 
+	public static boolean isMaskUseEnforced = false;
+	public static boolean isMaskUseDisabled = false;
+	public static boolean isVaccineEnforced = false;
+
 	public static int chanceToGoOut = 40;
 
 	public static double childAggravationChance = Double.valueOf("0.001");
@@ -49,7 +55,23 @@ public class SimConstants {
 	public static double vaccineImmunityBuffer = Double.valueOf("25");
 	public static int vaccineDistributionTime = 50;
 
-	public void updateModifyableValues() {
+	public static void updateModifyableValues(ModifyableParameters params) {
+
+		standardIncubationTimeDisease = params.getStandardIncubationTimeDiseaseParam();
+		chanceToTransmitDisease = params.getChanceToTransmitDiseaseParam();
+		healingTimeDisease = params.getHealingTimeDiseaseParam();
+		initialChanceToHeal = params.getInitialChanceToHealParam();
+		initialChanceToKill = params.getInitialChanceToKillParam();
+		chanceForAsymptomatic = params.getChanceForAsymptomaticParam();
+		chanceToGoOut = params.getChanceToGoOutParam();
+		chanceToSelfQuarantine = params.getChanceToSelfQuarantineParam();
+		agentsAtCentralLocation_atSameTime = params.getAgentsAtCentralLocation_atSameTimeParam();
+		maskDistributionTime = params.getMaskDistributionTimeParam();
+		maskCooldownTime = params.getMaskCooldownTimeParam();
+		vaccineDistributionTime = params.getVaccineDistributionTimeParam();
+		isMaskUseEnforced = params.isMaskUseEnforcedParam();
+		isMaskUseDisabled = params.isMaskUseDisabledParam();
+		isVaccineEnforced = params.isVaccineEnforcedParam();
 
 	}
 }

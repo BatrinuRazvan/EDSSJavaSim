@@ -16,7 +16,6 @@ public class Vaccine {
 	private int shotAdministeredToday;
 
 	public Vaccine(int numberOfAgents) {
-		super();
 		this.immunityBuffer = SimConstants.vaccineImmunityBuffer;
 		this.distributionTime = SimConstants.vaccineDistributionTime;
 		this.distributionPeriod = 0;

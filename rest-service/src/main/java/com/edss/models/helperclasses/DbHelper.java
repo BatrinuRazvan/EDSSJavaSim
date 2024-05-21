@@ -596,4 +596,21 @@ public class DbHelper {
 		}
 	}
 
+	public static void addDiagnosticTimestamp(String diagnostic, int numberOfSickRegistered) {
+		String sqlStatement = "INSERT INTO " + Constants.DIAGNOSTICS_TIMESTAMPS_TABLE
+				+ " (diagnosticname, registered) VALUES (?, ?)";
+
+		try (Connection connection = DriverManager.getConnection(Constants.JDBC_URL, Constants.USERNAME,
+				Constants.PASSWORD); PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement)) {
+
+			preparedStatement.setString(1, diagnostic);
+			preparedStatement.setInt(2, numberOfSickRegistered);
+
+			preparedStatement.executeUpdate();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
 }

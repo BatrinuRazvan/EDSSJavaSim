@@ -38,7 +38,7 @@ public class Simulation {
 	private boolean disableMaskUse;
 
 	private Vaccine vaccine;
-	private boolean enforceVaccineShot;
+	private boolean enforceVaccine;
 
 	public Simulation(int simulationPeriodMonths, int numberOfAgents, int numberOfSickAtStart) {
 		this.dayCounter = 0;
@@ -55,8 +55,7 @@ public class Simulation {
 		Simulation.recoveredAgents = 0;
 		this.isRunning = true;
 		this.maskUse = new Mask(numberOfAgents);
-		this.enforceMaskUse = false;
-		this.disableMaskUse = false;
+		this.vaccine = new Vaccine(numberOfAgents);
 	}
 
 	public void runSimulation() {
@@ -68,11 +67,12 @@ public class Simulation {
 		while (dayCounter != simulationPeriodDays && isRunning) {
 
 			SimHelper.checkIsRunning();
-			enforceMaskUse = dayCounter == 20;
-			disableMaskUse = dayCounter == 30;
+			enforceMaskUse = SimConstants.isMaskUseEnforced;
+			disableMaskUse = SimConstants.isMaskUseDisabled;
+			enforceVaccine = SimConstants.isVaccineEnforced;
 			maskUse.changeOnEnforcement(enforceMaskUse, agents);
 			maskUse.checkDisablement(disableMaskUse, agents);
-			vaccine.changeOnEnforcement(enforceVaccineShot, agents);
+			vaccine.changeOnEnforcement(enforceVaccine, agents);
 			resetDailyVariables();
 			List<Agent> agentsToRemove = new ArrayList<>();
 

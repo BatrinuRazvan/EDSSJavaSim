@@ -23,6 +23,7 @@ public class Constants {
 	public static final String DIAGNOSTICS_TABLE = "DIAGNOSTICS";
 	public static final String SYMPTOMS_TABLE = "SYMPTOMS";
 	public static final String COVID19_TM_TABLE = "COVID19_TM";
+	public static final String DIAGNOSTICS_TIMESTAMPS_TABLE = "DIAGNOSTICS_TIMESTAMPS";
 
 	public static Map<String, List<Double>> cities = HelperMethods.initCities();
 

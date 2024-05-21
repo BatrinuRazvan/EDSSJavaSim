@@ -34,6 +34,7 @@ public class QuestionsController {
 	public ResponseEntity<?> incrementDiagnosticNumberByUser(@RequestBody String diagnostic) {
 
 		DbHelper.incrementDiagnosticNumber(diagnostic, 1);
+		DbHelper.addDiagnosticTimestamp(diagnostic, 1);
 
 		return ResponseEntity.ok().build();
 	}
@@ -43,6 +44,7 @@ public class QuestionsController {
 			@RequestBody int numberOfDiagnostics) {
 
 		DbHelper.incrementDiagnosticNumber(diagnostic, numberOfDiagnostics);
+		DbHelper.addDiagnosticTimestamp(diagnostic, numberOfDiagnostics);
 
 		return ResponseEntity.ok().build();
 	}

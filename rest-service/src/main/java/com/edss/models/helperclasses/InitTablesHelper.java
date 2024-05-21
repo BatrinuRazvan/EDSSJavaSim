@@ -233,4 +233,22 @@ public class InitTablesHelper {
 		}
 
 	}
+
+	public static void initDiagnosticsTimeStampTable() {
+		try (Connection connection = DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+				Statement statement = connection.createStatement()) {
+
+			statement.executeUpdate("DROP TABLE IF EXISTS " + Constants.DIAGNOSTICS_TIMESTAMPS_TABLE);
+
+			String createTableQuery = "CREATE TABLE " + Constants.DIAGNOSTICS_TIMESTAMPS_TABLE + " ("
+					+ Constants.TIMESTAMP_CURRENT + "DIAGNOSTICNAME VARCHAR(255)," + "REGISTERED INT" + ")";
+
+			statement.executeUpdate(createTableQuery);
+
+			System.out.println(Constants.DIAGNOSTICS_TIMESTAMPS_TABLE + " table created successfully.");
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 }
