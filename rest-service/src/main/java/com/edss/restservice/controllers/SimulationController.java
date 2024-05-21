@@ -28,6 +28,7 @@ public class SimulationController {
 
 		SimHelper.initSimulatinDatabase();
 		sim = new Simulation(simPeriod, numberOfAgents, numberOfSickAtStart);
+		// 9 100000 100
 		sim.runSimulation();
 
 		return "Simulation started";
