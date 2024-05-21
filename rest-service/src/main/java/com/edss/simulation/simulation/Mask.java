@@ -16,7 +16,6 @@ public class Mask {
 	private int alreadyWithMask;
 
 	public Mask(int numberOfAgents) {
-		super();
 		this.distributionTime = SimConstants.maskDistributionTime;
 		this.cooldownTime = SimConstants.maskCooldownTime;
 		this.distributionPeriod = 0;

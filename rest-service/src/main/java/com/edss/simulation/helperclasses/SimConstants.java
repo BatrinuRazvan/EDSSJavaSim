@@ -19,7 +19,7 @@ public class SimConstants {
 	public static final String REMOVE_SUSCEPTIBLE = "REMOVE_SUSCEPTIBLE";
 	public static final String REMOVE_DEAD = "REMOVE_DEAD";
 
-	// for Disease class
+	// Disease
 	public static final String CHANCE_TO_KILL_NORMAL_BED = "CHANCE_TO_KILL_NORMAL_BED";
 	public static final String CHANCE_TO_KILL_ICU_BED = "CHANCE_TO_KILL_ICU_BED";
 	public static final String CHANCE_TO_KILL_NO_ICU_AVAILABLE = "CHANCE_TO_KILL_NO_ICU_AVAILABLE";
@@ -30,6 +30,8 @@ public class SimConstants {
 
 	public static final String CHANCE_TO_AGGRAVATE = "CHANCE_TO_AGGRAVATE";
 
+	public static int chanceToGoOut = 40;
+
 	public static double childAggravationChance = Double.valueOf("0.001");
 	public static double adultAggravationChance = Double.valueOf("0.005");
 	public static double elderAggravationChance = Double.valueOf("0.008");
@@ -38,8 +40,16 @@ public class SimConstants {
 
 	public static int agentsAtCentralLocation_atSameTime = 100;
 
-	// for use of Mask
+	// Mask
 	public static double maskHelpingPercent = Double.valueOf("5");
 	public static int maskDistributionTime = 45;
 	public static int maskCooldownTime = 25;
+
+	// Vaccine
+	public static double vaccineImmunityBuffer = Double.valueOf("25");
+	public static int vaccineDistributionTime = 50;
+
+	public void updateModifyableValues() {
+
+	}
 }

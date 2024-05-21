@@ -37,6 +37,9 @@ public class Simulation {
 	private boolean enforceMaskUse;
 	private boolean disableMaskUse;
 
+	private Vaccine vaccine;
+	private boolean enforceVaccineShot;
+
 	public Simulation(int simulationPeriodMonths, int numberOfAgents, int numberOfSickAtStart) {
 		this.dayCounter = 0;
 		this.setTodaysDate(SimHelper.initCurrentDate());
@@ -69,6 +72,7 @@ public class Simulation {
 			disableMaskUse = dayCounter == 30;
 			maskUse.changeOnEnforcement(enforceMaskUse, agents);
 			maskUse.checkDisablement(disableMaskUse, agents);
+			vaccine.changeOnEnforcement(enforceVaccineShot, agents);
 			resetDailyVariables();
 			List<Agent> agentsToRemove = new ArrayList<>();
 

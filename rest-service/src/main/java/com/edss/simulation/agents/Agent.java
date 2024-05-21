@@ -29,7 +29,7 @@ public abstract class Agent {
 		this.isInfectious = isInfectious;
 		this.isRecovered = false;
 		this.ableToMeet = true;
-		this.chanceToGoOut = 40;
+		this.chanceToGoOut = SimConstants.chanceToGoOut;
 		this.hasMask = false;
 		initDiseaseAtStart(isInfectious);
 	}
@@ -62,7 +62,7 @@ public abstract class Agent {
 		return immunity;
 	}
 
-	public void setImmunity(float immunity) {
+	public void setImmunity(double immunity) {
 		this.immunity = immunity;
 	}
 
@@ -177,6 +177,10 @@ public abstract class Agent {
 		if (isInfectious) {
 			initDisease(new Disease());
 		}
+	}
+
+	public void addImmunity(double valueAdded) {
+		this.immunity += valueAdded;
 	}
 
 	public abstract void updateStateOfDisease();

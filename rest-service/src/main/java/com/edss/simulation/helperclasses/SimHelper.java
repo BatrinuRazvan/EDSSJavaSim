@@ -7,7 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
-import java.time.temporal.TemporalAdjusters;
+import java.time.Month;
 import java.util.Random;
 
 import com.edss.simulation.agents.Agent;
@@ -26,13 +26,14 @@ public class SimHelper {
 		LocalDate now = LocalDate.now();
 
 		for (int iterate = 0; iterate < simulationPeriodMonths; iterate++) {
-			LocalDate future = now.plusMonths(iterate);
+			LocalDate nextMonth = now.plusMonths(iterate);
 			if (iterate == 0) {
-				result += future.with(TemporalAdjusters.lastDayOfMonth()).getDayOfMonth() - now.getDayOfMonth();
+				Month currentMonth = now.getMonth();
+				result += currentMonth.length(now.isLeapYear()) - now.getDayOfMonth();
 			} else if (iterate == simulationPeriodMonths - 1) {
 				result += now.getDayOfMonth();
 			} else {
-				result += future.with(TemporalAdjusters.lastDayOfMonth()).getDayOfMonth();
+				result += nextMonth.lengthOfMonth();
 			}
 		}
 
