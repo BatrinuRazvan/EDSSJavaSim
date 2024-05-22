@@ -72,6 +72,7 @@ public class SimulationController {
 		simPeriod = params.getSimPeriodParam();
 		numberOfAgents = params.getNumberOfAgentsParam();
 		numberOfSickAtStart = params.getNumberOfSickAtStartParam();
+		System.out.println("sent");
 
 		return ResponseEntity.ok().build();
 	}

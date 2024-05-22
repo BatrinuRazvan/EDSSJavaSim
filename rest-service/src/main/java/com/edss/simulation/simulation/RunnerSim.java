@@ -17,7 +17,8 @@ public class RunnerSim {
 //		InitTablesHelper.initExitPointsTable();
 //		InitTablesHelper.initDiagnosticsTable();
 //		InitTablesHelper.initSymptomsTable();
-		InitTablesHelper.initCovidTimisoaraDatabase();
+//		InitTablesHelper.initCovidTimisoaraDatabase();
+		InitTablesHelper.initDiagnosticsTimeStampTable();
 	}
 
 }
