@@ -40,11 +40,11 @@ public class QuestionsController {
 	}
 
 	@PostMapping("/incrementDiagnosticNumberByMedic")
-	public ResponseEntity<?> incrementDiagnosticNumberByMedic(@RequestBody String diagnostic,
-			@RequestBody int numberOfDiagnostics) {
+	public ResponseEntity<?> incrementDiagnosticNumberByMedic(@RequestParam String diagnostic,
+			@RequestParam String numberOfDiagnostics) {
 
-		DbHelper.incrementDiagnosticNumber(diagnostic, numberOfDiagnostics);
-		DbHelper.addDiagnosticTimestamp(diagnostic, numberOfDiagnostics);
+		DbHelper.incrementDiagnosticNumber(diagnostic, Integer.parseInt(numberOfDiagnostics));
+		DbHelper.addDiagnosticTimestamp(diagnostic, Integer.parseInt(numberOfDiagnostics));
 
 		return ResponseEntity.ok().build();
 	}

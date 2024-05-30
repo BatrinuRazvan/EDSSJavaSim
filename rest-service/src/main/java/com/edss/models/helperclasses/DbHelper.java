@@ -479,7 +479,7 @@ public class DbHelper {
 			ResultSet result = statement.executeQuery(createTableQuery);
 			List<String> diagnostics = new ArrayList<>();
 			while (result.next()) {
-				String dia = result.getString(2);
+				String dia = result.getString(3);
 				diagnostics.add(dia);
 			}
 			return diagnostics;
