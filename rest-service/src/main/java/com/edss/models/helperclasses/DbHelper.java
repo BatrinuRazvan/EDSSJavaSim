@@ -276,7 +276,7 @@ public class DbHelper {
 							UserLocation location = new UserLocation(resultUsers.getDouble(3),
 									resultUsers.getDouble(4));
 							EdssSubscription sub = new EdssSubscription(resultUsers.getString(1),
-									resultUsers.getString(6), resultUsers.getString(7), resultUsers.getString(8));
+									resultUsers.getString(7), resultUsers.getString(8), resultUsers.getString(9));
 							User user = new User(resultUsers.getString(1), resultUsers.getString(2), location,
 									resultUsers.getString(6));
 							user.setSubscription(sub);
@@ -479,7 +479,7 @@ public class DbHelper {
 			ResultSet result = statement.executeQuery(createTableQuery);
 			List<String> diagnostics = new ArrayList<>();
 			while (result.next()) {
-				String dia = result.getString(3);
+				String dia = result.getString(2);
 				diagnostics.add(dia);
 			}
 			return diagnostics;

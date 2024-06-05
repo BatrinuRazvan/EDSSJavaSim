@@ -9,16 +9,16 @@ public class RunnerSim {
 //		SimHelper.initSimulatinDatabase();
 //		sim.runSimulation();
 //		DbHelper.initMarkersDatabase();
-//		DbHelper.initNotificationsDatabase();
+//		InitTablesHelper.initNotificationsDatabase();
 //		DbHelper.initUsersTable();
 		InitTablesHelper.initUsersTable();
 //		InitTablesHelper.initUserResponsesTable();
 //		InitTablesHelper.initDecisionResponsesTable();
 //		InitTablesHelper.initExitPointsTable();
-		InitTablesHelper.initDiagnosticsTable();
-		InitTablesHelper.initSymptomsTable();
+//		InitTablesHelper.initDiagnosticsTable();
+//		InitTablesHelper.initSymptomsTable();
 //		InitTablesHelper.initCovidTimisoaraDatabase();
-		InitTablesHelper.initDiagnosticsTimeStampTable();
+//		InitTablesHelper.initDiagnosticsTimeStampTable();
 	}
 
 }
