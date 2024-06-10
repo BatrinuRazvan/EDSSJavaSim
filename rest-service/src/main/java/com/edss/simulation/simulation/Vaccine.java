@@ -28,14 +28,22 @@ public class Vaccine {
 			if (distributionPeriod < distributionTime) {
 				shotAdministeredToday = 0;
 				Random randomModifyer = new Random();
-				for (int iterate = 0; iterate < distributionNumberPerDay + randomModifyer.nextInt(-5, 5); iterate++) {
+				for (int iterate = 0; iterate < distributionNumberPerDay
+						+ randomModifyer.nextInt(-1000, 1000); iterate++) {
 					agents.get(iterate + getShotAdministeredTotal()).setImmunity(immunityBuffer);
 					shotAdministeredTotal = getShotAdministeredTotal() + 1;
 					shotAdministeredToday = getShotAdministeredToday() + 1;
 				}
 				distributionPeriod += 1;
+			} else {
+				resetVaccineParams();
 			}
 		}
+	}
+
+	private void resetVaccineParams() {
+		distributionPeriod = 0;
+		SimConstants.isVaccineEnforced = false;
 	}
 
 	public int getShotAdministeredToday() {

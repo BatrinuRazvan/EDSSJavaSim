@@ -1,6 +1,7 @@
 package com.edss.simulation.helperclasses;
 
 import com.edss.models.ModifyableParameters;
+import com.edss.models.helperclasses.HelperMethods;
 
 public class SimConstants {
 
@@ -57,18 +58,26 @@ public class SimConstants {
 
 	public static void updateModifyableValues(ModifyableParameters params) {
 
-		standardIncubationTimeDisease = params.getStandardIncubationTimeDiseaseParam();
-		chanceToTransmitDisease = params.getChanceToTransmitDiseaseParam();
-		healingTimeDisease = params.getHealingTimeDiseaseParam();
-		initialChanceToHeal = params.getInitialChanceToHealParam();
-		initialChanceToKill = params.getInitialChanceToKillParam();
-		chanceForAsymptomatic = params.getChanceForAsymptomaticParam();
-		chanceToGoOut = params.getChanceToGoOutParam();
-		chanceToSelfQuarantine = params.getChanceToSelfQuarantineParam();
-		agentsAtCentralLocation_atSameTime = params.getAgentsAtCentralLocation_atSameTimeParam();
-		maskDistributionTime = params.getMaskDistributionTimeParam();
-		maskCooldownTime = params.getMaskCooldownTimeParam();
-		vaccineDistributionTime = params.getVaccineDistributionTimeParam();
+		standardIncubationTimeDisease = HelperMethods.isZeroValue(standardIncubationTimeDisease,
+				params.getStandardIncubationTimeDiseaseParam());
+		standardIncubationTimeDisease = HelperMethods.isZeroValue(standardIncubationTimeDisease,
+				params.getStandardIncubationTimeDiseaseParam());
+		chanceToTransmitDisease = HelperMethods.isZeroValue(chanceForAsymptomatic,
+				params.getChanceToTransmitDiseaseParam());
+		healingTimeDisease = HelperMethods.isZeroValue(healingTimeDisease, params.getHealingTimeDiseaseParam());
+		initialChanceToHeal = HelperMethods.isZeroValue(initialChanceToHeal, params.getInitialChanceToHealParam());
+		initialChanceToKill = HelperMethods.isZeroValue(initialChanceToKill, params.getInitialChanceToKillParam());
+		chanceForAsymptomatic = HelperMethods.isZeroValue(chanceForAsymptomatic,
+				params.getChanceForAsymptomaticParam());
+		chanceToGoOut = HelperMethods.isZeroValue(chanceToGoOut, params.getChanceToGoOutParam());
+		chanceToSelfQuarantine = HelperMethods.isZeroValue(chanceToSelfQuarantine,
+				params.getChanceToSelfQuarantineParam());
+		agentsAtCentralLocation_atSameTime = HelperMethods.isZeroValue(agentsAtCentralLocation_atSameTime,
+				params.getAgentsAtCentralLocation_atSameTimeParam());
+		maskDistributionTime = HelperMethods.isZeroValue(maskDistributionTime, params.getMaskDistributionTimeParam());
+		maskCooldownTime = HelperMethods.isZeroValue(maskCooldownTime, params.getMaskCooldownTimeParam());
+		vaccineDistributionTime = HelperMethods.isZeroValue(vaccineDistributionTime,
+				params.getVaccineDistributionTimeParam());
 		isMaskUseEnforced = params.isMaskUseEnforcedParam();
 		isMaskUseDisabled = params.isMaskUseDisabledParam();
 		isVaccineEnforced = params.isVaccineEnforcedParam();

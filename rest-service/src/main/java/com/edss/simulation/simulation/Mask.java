@@ -33,8 +33,8 @@ public class Mask {
 			if (distributionPeriod < distributionTime) {
 				for (int iterate = 0; iterate < distributionNumberPerDay; iterate++) {
 					agents.get(iterate + alreadyWithMask).setMask(true);
-					alreadyWithMask += 1;
 				}
+				alreadyWithMask += distributionNumberPerDay;
 				distributionPeriod += 1;
 			} else {
 				resetMaskEnableVariables();
@@ -66,10 +66,12 @@ public class Mask {
 
 	private void resetMaskEnableVariables() {
 		distributionPeriod = 0;
+		SimConstants.isMaskUseEnforced = false;
 	}
 
 	private void resetMaskDisableVariables() {
 		cooldownPeriod = 0;
+		SimConstants.isMaskUseDisabled = false;
 	}
 
 	public double getPercentageOfMaskUse(int nrOfAgents) {

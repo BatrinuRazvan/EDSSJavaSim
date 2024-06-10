@@ -110,7 +110,8 @@ public class Simulation {
 					deadAgents, dailyNewSick, dailyNewRecovered, dailyNewDead,
 					Hospital.getHospital().getNormalBedAgents().size(), Hospital.getHospital().getIcuBedAgents().size(),
 					Hospital.getHospital().getTotalHospitalizations(), Hospital.getHospital().getDailyHospitalization(),
-					maskUse.getPercentageOfMaskUse(agents.size()));
+					maskUse.getPercentageOfMaskUse(agents.size()), vaccine.getShotAdministeredToday(),
+					vaccine.getShotAdministeredTotal());
 			setTodaysDate(SimHelper.nextDay(todaysDate));
 		}
 

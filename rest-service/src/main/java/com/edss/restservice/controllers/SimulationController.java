@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.edss.models.ModifyableParameters;
 import com.edss.models.SimulationDayData;
 import com.edss.models.helperclasses.DbHelper;
+import com.edss.models.helperclasses.HelperMethods;
 import com.edss.simulation.helperclasses.SimConstants;
 import com.edss.simulation.helperclasses.SimHelper;
 import com.edss.simulation.simulation.Simulation;
@@ -19,9 +20,9 @@ import com.edss.simulation.simulation.Simulation;
 public class SimulationController {
 
 	private Simulation sim;
-	private int simPeriod;
-	private int numberOfAgents;
-	private int numberOfSickAtStart;
+	private int simPeriod = 9;
+	private int numberOfAgents = 100000;
+	private int numberOfSickAtStart = 100;
 
 	@PostMapping("/startSimulation")
 	public String startSimulation() {
@@ -68,9 +69,9 @@ public class SimulationController {
 	public ResponseEntity<Object> updateParameters(@RequestBody ModifyableParameters params) {
 
 		SimConstants.updateModifyableValues(params);
-		simPeriod = params.getSimPeriodParam();
-		numberOfAgents = params.getNumberOfAgentsParam();
-		numberOfSickAtStart = params.getNumberOfSickAtStartParam();
+		simPeriod = HelperMethods.isZeroValue(simPeriod, params.getSimPeriodParam());
+		numberOfAgents = HelperMethods.isZeroValue(numberOfAgents, params.getNumberOfAgentsParam());
+		numberOfSickAtStart = HelperMethods.isZeroValue(numberOfSickAtStart, params.getNumberOfSickAtStartParam());
 		System.out.println("sent");
 
 		return ResponseEntity.ok().build();

@@ -50,4 +50,12 @@ public class HelperMethods {
 	public static List<String> parseSymptoms(String symptoms) {
 		return List.of(symptoms.split(","));
 	}
+
+	public static int isZeroValue(int currentValue, int valueToCheck) {
+		return valueToCheck != 0 ? valueToCheck : currentValue;
+	}
+
+	public static double isZeroValue(double currentValue, double valueToCheck) {
+		return valueToCheck != Double.valueOf(0) ? valueToCheck : currentValue;
+	}
 }
