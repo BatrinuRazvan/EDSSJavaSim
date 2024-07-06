@@ -472,7 +472,7 @@ public class DbHelper {
 			ResultSet result = statement.executeQuery(createTableQuery);
 			List<String> diagnostics = new ArrayList<>();
 			while (result.next()) {
-				String dia = result.getString(2);
+				String dia = result.getString(3);
 				diagnostics.add(dia);
 			}
 			return diagnostics;
@@ -489,7 +489,7 @@ public class DbHelper {
 		try (Connection connection = DriverManager.getConnection(Constants.JDBC_URL, Constants.USERNAME,
 				Constants.PASSWORD); PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement)) {
 
-			preparedStatement.setString(1, diagnostic);
+			preparedStatement.setString(1, HelperMethods.checkString(diagnostic));
 			preparedStatement.setInt(2, 1);
 
 			preparedStatement.executeUpdate();

@@ -55,4 +55,8 @@ public class HelperMethods {
 	public static double isZeroValue(double currentValue, double valueToCheck) {
 		return valueToCheck != Double.valueOf(0) ? valueToCheck : currentValue;
 	}
+
+	public static String checkString(String str) {
+		return str.replace("+", " ");
+	}
 }
