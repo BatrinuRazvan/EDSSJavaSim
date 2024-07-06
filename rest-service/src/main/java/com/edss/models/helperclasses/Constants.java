@@ -9,6 +9,9 @@ public class Constants {
 	public static final String USERNAME = "root";
 	public static final String PASSWORD = "1234";
 
+	public static final String NOTIFICATIONS_PUBLIC = "BGAUGfksW8MR0puO1T-LQuzYRNjmfLrwG9-PStRYckwEU3zVI3P60QOfsY6MoF82zwgqQpHUiLXBlsW425fh6no";
+	public static final String NOTIFICATIONS_PRIVATE = "mY1Nz_eu7xT_Gt61bNSeD8xEnDjpBV0C5vjQT7NSNzc";
+
 	public static final String ID_AUTO_INCREMENT = "id INT AUTO_INCREMENT PRIMARY KEY,";
 	public static final String ID_DAY_INCREMENT = "DAY_INCREMENT INT AUTO_INCREMENT PRIMARY KEY,";
 	public static final String TIMESTAMP_CURRENT = "TIMESTAMP DATETIME DEFAULT CURRENT_TIMESTAMP,";

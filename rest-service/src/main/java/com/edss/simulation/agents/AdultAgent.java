@@ -17,7 +17,6 @@ public class AdultAgent extends Agent {
 	@Override
 	public void updateStateOfDisease() {
 		if (disease != null && immunity < 100) {
-			// case normal - after incubation
 			if (disease.hasIncubated() && !isHospitalized) {
 				if (disease.getPeriod() == disease.getHealingTime()) {
 					disease.updateVariable(SimConstants.CHANCE_TO_HEAL, Double.valueOf("50"));
@@ -28,7 +27,6 @@ public class AdultAgent extends Agent {
 				}
 				selfQuarantine();
 			}
-			// disease flow while in hospital
 			if (disease.hasIncubated() && isHospitalized) {
 				if (disease.getPeriod() == disease.getHealingTime()) {
 					disease.updateVariable(SimConstants.CHANCE_TO_HEAL, Double.valueOf("25"));

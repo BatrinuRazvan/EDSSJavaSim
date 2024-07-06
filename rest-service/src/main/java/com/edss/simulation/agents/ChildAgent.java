@@ -17,7 +17,6 @@ public class ChildAgent extends Agent {
 	@Override
 	public void updateStateOfDisease() {
 		if (disease != null && immunity < 100) {
-			// disease normal flow; no hospital
 			if (disease.hasIncubated() && !isHospitalized) {
 				if (disease.getPeriod() == disease.getHealingTime()) {
 					disease.updateVariable(SimConstants.CHANCE_TO_HEAL, Double.valueOf("50"));
@@ -28,7 +27,6 @@ public class ChildAgent extends Agent {
 				}
 				selfQuarantine();
 			}
-			// disease flow while in hospital
 			if (disease.hasIncubated() && isHospitalized) {
 				if (disease.getPeriod() == disease.getHealingTime()) {
 					disease.updateVariable(SimConstants.CHANCE_TO_HEAL, Double.valueOf("50"));

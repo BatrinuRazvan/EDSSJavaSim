@@ -25,7 +25,6 @@ public class GeneralController {
 		return DbHelper.getCities();
 	}
 
-// POST endpoint to receive the ID token from the frontend
 	@PostMapping("/auth/google")
 	public ResponseEntity<?> authenticateUser(@RequestBody String idTokenString) {
 		GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(new NetHttpTransport(), new JacksonFactory())
@@ -35,11 +34,8 @@ public class GeneralController {
 			GoogleIdToken idToken = verifier.verify(idTokenString);
 			if (idToken != null) {
 				GoogleIdToken.Payload payload = idToken.getPayload();
-				// Get profile information from payload
 				String email = payload.getEmail();
 				String name = (String) payload.get("name");
-
-				// Here, you would save or update the user details in your database
 
 				return ResponseEntity.ok().body("User authenticated");
 			} else {

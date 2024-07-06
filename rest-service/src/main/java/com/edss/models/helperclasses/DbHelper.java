@@ -38,8 +38,6 @@ public class DbHelper {
 
 	public static void addMessageNotification(String city, String title, String color, String severity, int rangeKm,
 			String description) {
-// Assuming Constants.NOTIFICATIONS_TABLE is your table name and it has columns 
-// city, title, color, severity, range_km, and description accordingly.
 		String sqlStatement = "INSERT INTO " + Constants.NOTIFICATIONS_TABLE
 				+ " (city, title, color, severity, rangekm, description, degreechange) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
@@ -177,7 +175,7 @@ public class DbHelper {
 		}
 	}
 
-	public static List<EdssSubscription> getAllUsers() {
+	public static List<User> getAllUsers() {
 		try (Connection connection = DriverManager.getConnection(Constants.JDBC_URL, Constants.USERNAME,
 				Constants.PASSWORD); Statement statement = connection.createStatement()) {
 
@@ -190,7 +188,7 @@ public class DbHelper {
 						new UserLocation(result.getDouble(3), result.getDouble(4)), result.getString(6));
 				users.add(user);
 			}
-			return null;
+			return users;
 
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -199,22 +197,17 @@ public class DbHelper {
 	}
 
 	public static void saveSubscription(EdssSubscription subscription) {
-		// Assuming Constants.SUBSCRIPTION_TABLE holds the name of your table
-		// and you have columns named `endpoint`, `p256dh`, `auth`, and `user_id` (or
-		// similar) in your table
 		String sqlStatement = "UPDATE " + Constants.USERS_TABLE
 				+ " SET endpoint = ?, p256 = ?, auth = ? WHERE userid = ?";
 
 		try (Connection connection = DriverManager.getConnection(Constants.JDBC_URL, Constants.USERNAME,
 				Constants.PASSWORD); PreparedStatement preparedStatement = connection.prepareStatement(sqlStatement)) {
 
-			// Set the subscription details in the prepared statement
 			preparedStatement.setString(1, subscription.getEndpoint());
 			preparedStatement.setString(2, subscription.getP256dh());
 			preparedStatement.setString(3, subscription.getAuth());
-			preparedStatement.setString(4, subscription.getUserId()); // Assuming the user ID is the last parameter
+			preparedStatement.setString(4, subscription.getUserId());
 
-			// Execute the update
 			int updatedRows = preparedStatement.executeUpdate();
 
 			if (updatedRows > 0) {

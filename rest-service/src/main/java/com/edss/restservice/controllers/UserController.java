@@ -72,11 +72,7 @@ public class UserController {
 			UserResponse userResponse = new UserResponse(userId, responses);
 			DbHelper.saveUserResponse(userResponse);
 
-			// Now you have a UserResponse object populated with userId and responses
 			System.out.println("Received UserResponse: " + userResponse);
-
-			// Process the userResponse as needed
-			// For example, save it to the database
 
 			return ResponseEntity.ok().build();
 		} catch (IOException e) {

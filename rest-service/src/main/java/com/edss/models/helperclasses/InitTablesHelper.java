@@ -190,8 +190,6 @@ public class InitTablesHelper {
 
 			System.out.println(Constants.DIAGNOSTICS_TABLE + " table created successfully.");
 
-//			initOtherOption(Constants.DIAGNOSTICS_TABLE, connection, statement);
-
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

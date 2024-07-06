@@ -28,13 +28,11 @@ public class HelperMethods {
 	}
 
 	public static boolean userAlreadyExists(User newUser) {
-//		List<User> allUsers = DbHelper.getAllUsers();
-//		return allUsers.stream().filter(user -> user.getUserId().equals(newUser.getUserId())).findAny().isPresent();
-		return false;
+		List<User> allUsers = DbHelper.getAllUsers();
+		return allUsers.stream().filter(user -> user.getUserId().equals(newUser.getUserId())).findAny().isPresent();
 	}
 
 	public static String constructPayload(MessageNotification notification) {
-		// Construct a JSON object from the notification details
 		JSONObject payloadJson = new JSONObject();
 		payloadJson.put("city", notification.getCity());
 		payloadJson.put("title", notification.getTitle());
@@ -43,7 +41,6 @@ public class HelperMethods {
 		payloadJson.put("range", notification.getRange());
 		payloadJson.put("description", notification.getDescription());
 
-		// Return the stringified version of the JSON object
 		return payloadJson.toString();
 	}
 

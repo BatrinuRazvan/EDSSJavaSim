@@ -156,7 +156,7 @@ public class Simulation {
 	}
 
 	private boolean checkIfAgentDies(Agent agent, List<Agent> agentsToRemove) {
-		if (agent.isSick()) { // check added for faster processing
+		if (agent.isSick()) {
 			Random kill = new Random();
 			if (kill.nextInt(0, 100) < agent.getChanceToBeKilled()) {
 				agentsToRemove.add(agent);

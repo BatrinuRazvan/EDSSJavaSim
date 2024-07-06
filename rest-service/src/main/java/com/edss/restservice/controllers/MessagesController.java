@@ -32,7 +32,6 @@ public class MessagesController {
 		DbHelper.addMessageNotification(notification.getCity(), notification.getTitle(), notification.getColor(),
 				notification.getSeverity(), notification.getRange(), notification.getDescription());
 
-//		List<EdssSubscription> subs = DbHelper.getAllSubscriptions();
 		List<User> users = DbHelper.getUsersInArea(notification);
 
 		users.forEach(user -> {
@@ -57,7 +56,7 @@ public class MessagesController {
 	@GetMapping("/getLocalMessages")
 	public List<MessageNotification> getLocalMessages(@RequestParam double latitude, @RequestParam double longitude) {
 		System.out.println("Latitude: " + latitude + ", Longitude: " + longitude);
-		UserLocation userLocation = new UserLocation(latitude, longitude); // Assuming you have such a constructor
+		UserLocation userLocation = new UserLocation(latitude, longitude);
 		return DbHelper.getLocalMessageNotifications(userLocation);
 	}
 
